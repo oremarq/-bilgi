@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kültür Atlası | Infinite Engine v2</title>
+    <title>Kültür Atlası | YARIŞMA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
@@ -174,7 +174,28 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 100; display: flex; justify-content: center; align-items: center; }
         .modal-content { padding: 35px; max-width: 450px; width: 95%; text-align: center; border-radius: 25px; }
 
-        .app-footer { text-align: center; padding-top: 20px; font-size: 0.85rem; color: var(--text-muted); }
+        .app-footer { text-align: center; padding-top: 20px; font-size: 0.9rem; color: var(--text-muted); }
+        
+        /* PREMIUM BERAT TEXT EFEKTİ */
+        .premium-berat {
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #00ff88, #00c878, #00ffff, #00ff88);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s ease infinite, premiumGlow 2s infinite alternate;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes premiumGlow {
+            from { text-shadow: 0 0 4px rgba(0,200,120,0.2); }
+            to { text-shadow: 0 0 12px rgba(0,255,136,0.6); }
+        }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -186,7 +207,7 @@
         <header class="app-header">
             <div>
                 <span class="logo-title">KÜLTÜR ATLASI</span>
-                <span class="logo-subtitle">Bilgi Yarışması</span>
+                <span class="logo-subtitle">Premium Edition</span>
             </div>
             <div class="header-controls" style="display: flex; gap: 10px;">
                 <div class="audio-controls">
@@ -194,7 +215,6 @@
                     <input type="range" id="sfxVol" min="0" max="1" step="0.1" value="0.5">
                 </div>
                 <button id="themeToggleBtn" class="icon-btn" style="background: rgba(255,255,255,0.1);">🌓</button>
-                <button id="resetMemoryBtn" class="lifeline-btn" style="border-color: var(--wrong-color); color: var(--wrong-color);">Hafızayı Sıfırla</button>
             </div>
         </header>
 
@@ -202,9 +222,8 @@
             <!-- GİRİŞ EKRANI -->
             <section id="welcomeState" class="state-view screen-card glass-panel visible">
                 <h1 class="brand-title">KÜLTÜR ATLASI</h1>
-                <p class="brand-desc">Genel Kültürünü Ölçmeye Var Mısın?</p>
+                <p class="brand-desc">Genel Kültür Bilgini Tartmaya Var Mısın?</p>
                 <button id="startGameBtn" class="action-btn glow-btn">YARIŞMAYA BAŞLA</button>
-                <div id="memoryStats" style="margin-top: 20px; font-size: 0.85rem; color: var(--text-muted);"></div>
             </section>
 
             <!-- GERİ SAYIM -->
@@ -238,13 +257,12 @@
 
             <!-- SONUÇ EKRANI -->
             <section id="resultsState" class="state-view screen-card glass-panel hidden">
-                <h2 id="resultTitle" class="brand-title">YARIŞMA BİTTİ</h2>
+                <h2 id="resultTitle" class="brand-title">TEST BİTTİ</h2>
                 <div class="metrics-dashboard">
                     <table class="metrics-table">
                         <tbody>
                             <tr><td>Doğru Cevap Sayısı</td><td id="metricAccuracy">0/15</td></tr>
                             <tr><td>Toplam Puan</td><td id="metricScore">0</td></tr>
-                            <tr><td>Hafızadaki Yasaklı Özne Sayısı</td><td id="metricMemoryCount">0</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -253,7 +271,7 @@
         </main>
 
         <footer class="app-footer">
-            <span>made by BERAT</span>
+            <span>Made by <span class="premium-berat">BERAT</span></span>
         </footer>
     </div>
 
@@ -296,7 +314,7 @@
             lock() { this.playTone(280, 'triangle', 0.15, 0.3); }
         }
 
-        // --- TAMAMEN BENZERSİZ VE DEVASA EŞSİZ ÖZNE VERİ TABANI ---
+        // --- ENTELEKTÜEL ÖZNE HAVUZU ---
         const MASTER_DATA = {
             "Tarih": [
                 { id: "t1", target: "Hammurabi Kanunları", event: "Babil'de ilk yazılı anayasal kuralların taş sütunlara kazınması", region: "Mezopotamya", hint: "Kısasa kısas ilkesiyle bilinen en eski ceza hukuku derlemesidir." },
@@ -360,8 +378,8 @@
             "Kültürel literatürde benzersiz bir konuma sahip olan, odak noktasına '#EVENT' durumunu alan ve çıkış ekosistemi #REGION olan şaheser veya fenomen hangisidir?"
         ];
 
-        // --- ENTEGRE HAFIZA VE BAN MOTORU (ANTI-REPETITION) ---
-        class AntiRepetitiveEngine {
+        // --- ARKA PLAN ENGINE ---
+        class AtlasEngine {
             constructor() {
                 this.audio = new AudioEngine();
                 this.roundQuestions = [];
@@ -387,10 +405,8 @@
                 document.getElementById('modalCloseBtn').addEventListener('click', () => { this.views.modal.classList.add('hidden'); });
                 document.getElementById('jokerFifty').addEventListener('click', () => this.triggerFiftyFifty());
                 document.getElementById('jokerHint').addEventListener('click', () => this.triggerHint());
-                document.getElementById('resetMemoryBtn').addEventListener('click', () => this.clearLocalStorageMemory());
                 document.getElementById('themeToggleBtn').addEventListener('click', () => this.toggleTheme());
 
-                this.updateMemoryStatsUI();
                 this.initBackgroundParticles();
             }
 
@@ -404,19 +420,6 @@
                     banned.push(id);
                     localStorage.setItem('atlas_banned_questions_v2', JSON.stringify(banned));
                 }
-            }
-
-            clearLocalStorageMemory() {
-                localStorage.removeItem('atlas_banned_questions_v2');
-                alert("Sistem hafızası tamamen sıfırlandı! Tüm sorular yeniden havuza dahil edildi.");
-                this.updateMemoryStatsUI();
-            }
-
-            updateMemoryStatsUI() {
-                let bannedCount = this.getBannedIds().length;
-                let totalPossible = 0;
-                Object.keys(MASTER_DATA).forEach(k => totalPossible += MASTER_DATA[k].length);
-                document.getElementById('memoryStats').innerText = `Hafızada Yasaklı Özne: ${bannedCount} / Toplam Konu: ${totalPossible}`;
             }
 
             toggleTheme() {
@@ -443,16 +446,18 @@
                 render();
             }
 
-            // --- TAMAMEN YASAKLI FİLTRESİNDEN GEÇMİŞ DİNAMİK TUR KURULUMU ---
+            // --- SESSİZ VE OTOMATİK HAFIZA SIFIRLAMALI SİSTEM ---
             buildRoundQuestions() {
                 let bannedIds = this.getBannedIds();
                 let categories = Object.keys(MASTER_DATA);
                 let roundList = [];
                 
-                // Eğer havuzdaki soruların çoğu yasaklandıysa hafızayı otomatik temizle ki oyun kilitlenmesin
+                // Toplam soru sayısı kontrolü
                 let totalItems = 0;
                 categories.forEach(c => totalItems += MASTER_DATA[c].length);
-                if (bannedIds.length >= totalItems - 3) {
+                
+                // Havuz dolmaya yakınsa çaktırmadan arkada kendi kendini temizler
+                if (bannedIds.length >= totalItems - 15) {
                     localStorage.removeItem('atlas_banned_questions_v2');
                     bannedIds = [];
                 }
@@ -463,29 +468,22 @@
                 while (roundList.length < 15 && securityCounter < 500) {
                     securityCounter++;
                     let currentCat = categories[catIndexPointer % categories.length];
-                    
-                    // Bu kategorideki tüm elemanları al ve filtrele
                     let rawItems = MASTER_DATA[currentCat];
+                    
                     let availableItems = rawItems.filter(item => !bannedIds.includes(item.id) && !roundList.some(r => r.id === item.id));
 
-                    // Eğer temiz soru kalmadıysa banlıları bu turluk esnet ama öncelik hep temiz olanların
                     if (availableItems.length === 0) {
                         availableItems = rawItems.filter(item => !roundList.some(r => r.id === item.id));
                     }
 
                     if (availableItems.length > 0) {
-                        // Rastgele bir özne seç
                         let chosenItem = availableItems[Math.floor(Math.random() * availableItems.length)];
-                        
-                        // Çeldiricileri (Yanlış şıkları) aynı kategorideki DİĞER öznelerden topla
                         let otherTargets = rawItems.filter(x => x.target !== chosenItem.target).map(x => x.target);
                         otherTargets.sort(() => 0.5 - Math.random());
-                        let finalOptions = [chosenItem.target, otherTargets[0], otherTargets[1], otherTargets[2]];
                         
-                        // Şıkları karıştır
+                        let finalOptions = [chosenItem.target, otherTargets[0], otherTargets[1], otherTargets[2]];
                         finalOptions.sort(() => 0.5 - Math.random());
 
-                        // Rastgele şablon giydir (Böylece cümle de hep değişir)
                         let template = TEMPLATES[Math.floor(Math.random() * TEMPLATES.length)];
                         let formattedText = template.replace("#EVENT", chosenItem.event).replace("#REGION", chosenItem.region);
 
@@ -499,7 +497,6 @@
                             hint: chosenItem.hint
                         });
 
-                        // Sonraki soru için kategori değiştir (Anti-Clump zinciri)
                         catIndexPointer++;
                     } else {
                         catIndexPointer++;
@@ -544,8 +541,6 @@
 
             loadActiveQuestion() {
                 const q = this.roundQuestions[this.currentIndex];
-                
-                // Karşılaşılmış soruyu anında hafızaya/kara listeye kaydet (Sayfa kapansa bile bir daha gelmeyecek)
                 this.saveBannedId(q.id);
 
                 document.getElementById('currentQuestionNum').innerText = this.currentIndex + 1;
@@ -591,7 +586,6 @@
                 this.audio.lock();
 
                 const nodes = document.getElementById('optionsGrid').children;
-                // Diğer tıklamaları engellemek için gridi kilitle
                 for(let n of nodes) n.style.pointerEvents = 'none';
                 nodes[idx].classList.add('selected-lock');
 
@@ -652,19 +646,15 @@
                 document.getElementById('resultTitle').innerText = isVictory ? "TEBRİKLER, ATLASI TAMAMLADINIZ!" : "ELENDİNİZ";
                 document.getElementById('metricAccuracy').innerText = `${this.currentIndex} / 15`;
                 document.getElementById('metricScore').innerText = this.score;
-                document.getElementById('metricMemoryCount').innerText = this.getBannedIds().length;
-                
-                this.updateMemoryStatsUI();
             }
 
             resetToWelcome() {
-                this.updateMemoryStatsUI();
                 this.showView('welcome');
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const engine = new AntiRepetitiveEngine();
+            const engine = new AtlasEngine();
             engine.init();
         });
     </script>
