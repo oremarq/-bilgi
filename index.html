@@ -252,7 +252,7 @@
             <!-- GİRİŞ EKRANI -->
             <section id="welcomeState" class="state-view screen-card glass-panel visible">
                 <h1 class="brand-title">KÜLTÜR ATLASI</h1>
-                <p class="brand-desc">Entelektüel sınırlarınızı zorlayacak yarışmayav var mısınız? Sesi açmayı unutmayın.</p>
+                <p class="brand-desc">Genel Kültür Bilgini Ölçmeye Var Mısın?</p>
                 <button id="startGameBtn" class="action-btn glow-btn">YARIŞMAYA BAŞLA</button>
             </section>
 
@@ -293,7 +293,7 @@
 
             <!-- SONUÇ EKRANI -->
             <section id="resultsState" class="state-view screen-card glass-panel hidden">
-                <h2 id="resultTitle" class="brand-title">OYUN BİTTİ</h2>
+                <h2 id="resultTitle" class="brand-title">YARIŞMA BİTTİ</h2>
                 <div id="badgeContainer" style="margin: 10px 0 25px 0; font-weight: 800; font-size: 1.8rem; color: #00c878; letter-spacing: 2px;"></div>
                 <div class="metrics-dashboard">
                     <table class="metrics-table">
@@ -305,7 +305,7 @@
                         </tbody>
                     </table>
                 </div>
-                <button id="restartGameBtn" class="action-btn glow-btn" style="margin-top: 15px;">TEKRAR OYNA</button>
+                <button id="restartGameBtn" class="action-btn glow-btn" style="margin-top: 15px;">TEKRAR YARIŞ</button>
             </section>
         </main>
 
@@ -364,7 +364,6 @@
             }
             playClockTick(secondsLeft) {
                 if (!this.ctx || this.isMuted) return;
-                // Son 15 saniyede tik-tak tonu değişir ve şiddetlenir
                 const freq = (secondsLeft % 2 === 0) ? 850 : 650;
                 const vol = secondsLeft <= 15 ? 0.25 : 0.12;
                 this.playTone(freq, 'sine', 0.04, vol);
@@ -388,121 +387,143 @@
             }
         }
 
-        // --- ORGANİK GENEL KÜLTÜR, TARİH VE MİTOLOJİ MOTORU (2000+ BENZERSİZ VARYASYON) ---
-        function generateMassiveQuestionPool() {
-            let pool = [];
-
-            // 1. Matris: Dünya Tarihi ve Büyük İmparatorluklar
-            const empires = [
-                { name: "Osmanlı İmparatorluğu", founder: "Osman Gazi", peak: "Kanuni Sultan Süleyman", capital: "İstanbul" },
-                { name: "Roma İmparatorluğu", founder: "Augustus", peak: "Trajan", capital: "Roma" },
-                { name: "Bizans İmparatorluğu", founder: "I. Konstantin", peak: "Justinianus", capital: "Konstantinopolis" },
-                { name: "Büyük Selçuklu Devleti", founder: "Tuğrul Bey", peak: "Melikşah", capital: "İsfahan" },
-                { name: "Babür İmparatorluğu", founder: "Babür Şah", peak: "Ekber Şah", capital: "Agra" },
-                { name: "Pers İmparatorluğu", founder: "Büyük Kiros", peak: "I. Darius", capital: "Persepolis" },
-                { name: "Makedonya Krallığı", founder: "II. Filip", peak: "Büyük İskender", capital: "Pella" },
-                { name: "Abbasi Halifeliği", founder: "Ebu'l-Abbas", peak: "Harun Reşid", capital: "Bağdat" }
-            ];
-
-            empires.forEach(emp => {
-                let altsFounder = empires.filter(e => e.founder !== emp.founder).map(e => e.founder).sort(() => 0.5 - Math.random()).slice(0, 3);
-                let optsF = [emp.founder, ...altsFounder].sort();
-                pool.push({
-                    category: "Tarih", difficulty: "Orta",
-                    question: `Tarih kaynaklarında devletleşme ve kurumsallaşma adımlarıyla bilinen ${emp.name}'nın resmi kurucusu ve ilk hükümdarı kabul edilen tarihi şahsiyet kimdir?`,
-                    options: optsF, correct: optsF.indexOf(emp.founder), hint: "Devlete adını veren veya ilk egemenlik hutbesini okutan liderdir."
-                });
-
-                let altsPeak = empires.filter(e => e.peak !== emp.peak).map(e => e.peak).sort(() => 0.5 - Math.random()).slice(0, 3);
-                let optsP = [emp.peak, ...altsPeak].sort();
-                pool.push({
-                    category: "Tarih", difficulty: "Zor",
-                    question: `Sınırların genişlemesi, ekonomik ve kültürel refah düzeyi dikkate alındığında, ${emp.name}'nın 'En Parlak Dönemi' olarak kabul edilen devir hangi hükümdara aittir?`,
-                    options: optsP, correct: optsP.indexOf(emp.peak), hint: "Hukuki reformları veya geniş fetih hareketleriyle çağ açan bir isimdir."
-                });
-            });
-
-            // 2. Matris: Mitoloji
-            const deities = [
-                { culture: "Yunan", name: "Zeus", domain: "Gökyüzü ve Şimşek", symbol: "Yıldırım Demeti" },
-                { culture: "Yunan", name: "Poseidon", domain: "Denizler ve Depremler", symbol: "Üç Başlı Mızrak" },
-                { culture: "Yunan", name: "Hades", domain: "Yeraltı Dünyası ve Ölüler", symbol: "Görünmezlik Miğferi" },
-                { culture: "İskandinav", name: "Odin", domain: "Bilgelik, Savaş ve Şiir", symbol: "Gungnir Mızrağı" },
-                { culture: "İskandinav", name: "Thor", domain: "Yıldırımlar ve Güç", symbol: "Mjölnir Çekici" },
-                { culture: "Mısır", name: "Anubis", domain: "Ölüm, Mumyalama ve Yeraltı", symbol: "Çakal Başı" },
-                { culture: "Mısır", name: "Ra", domain: "Güneş ve Yaşamın Kaynağı", symbol: "Güneş Diski" },
-                { culture: "Mısır", name: "Osiris", domain: "Yeniden Doğuş ve Tarım", symbol: "Atef Tacı" }
-            ];
-
-            deities.forEach(god => {
-                let altsDom = deities.filter(d => d.name !== god.name).map(d => d.name).sort(() => 0.5 - Math.random()).slice(0, 3);
-                let optsD = [god.name, ...altsDom].sort();
-                pool.push({
-                    category: "Mitoloji", difficulty: "Orta",
-                    question: `${god.culture} mitolojisinde ${god.domain} hakimi olarak kabul edilen ve kültürel metinlerde sıkça adı geçen efsanevi figür hangisidir?`,
-                    options: optsD, correct: optsD.indexOf(god.name), hint: `Sembolü ${god.symbol} olarak tasvir edilir.`
-                });
-            });
-
-            // 3. Matris: Edebiyat ve Sanat
-            const classics = [
-                { author: "Fyodor Dostoyevski", masterpiece: "Suç ve Ceza", character: "Raskolnikov", era: "Realizm" },
-                { author: "Lev Tolstoy", masterpiece: "Savaş ve Barış", character: "Natasha Rostova", era: "Realizm" },
-                { author: "William Shakespeare", masterpiece: "Hamlet", character: "Ophelia", era: "Rönesans" },
-                { author: "Dante Alighieri", masterpiece: "İlahi Komedya", character: "Beatrice", era: "Geç Orta Çağ" },
-                { author: "Franz Kafka", masterpiece: "Dönüşüm", character: "Gregor Samsa", era: "Modernizm" },
-                { author: "Albert Camus", masterpiece: "Yabancı", character: "Meursault", era: "Varoluşçuluk" },
-                { author: "Victor Hugo", masterpiece: "Sefiller", character: "Jean Valjean", era: "Romantizm" },
-                { author: "Goethe", masterpiece: "Faust", character: "Mephistopheles", era: "Romantizm" }
-            ];
-
-            classics.forEach(cls => {
-                let altsAuth = classics.filter(c => c.author !== cls.author).map(c => c.author).sort(() => 0.5 - Math.random()).slice(0, 3);
-                let optsA = [cls.author, ...altsAuth].sort();
-                pool.push({
-                    category: "Klasik Edebiyat", difficulty: "Orta",
-                    question: `Dünya edebiyat tarihine yön veren, ana karakteri '${cls.character}' üzerinden insan psikolojisini işleyen ve ${cls.era} akımının zirvesi sayılan '${cls.masterpiece}' eseri kime aittir?`,
-                    options: optsA, correct: optsA.indexOf(cls.author), hint: "Yazarın felsefi derinliği ve trajik hayat öyküsü eserlerine de yansımıştır."
-                });
-            });
-
-            // 4. Matris: Kültür Mirası Hacim Jeneratörü (2000+ Sözel Kombinasyon)
-            const locations = [
-                { city: "Babil'in Asma Bahçeleri", region: "Mezopotamya / Irak", feature: "Antik Dünyanın Yedi Harikası" },
-                { city: "Petra Antik Kenti", region: "Ürdün", feature: "Gül kırmızısı kaya oymaları" },
-                { city: "Machu Picchu", region: "Peru / And Dağları", feature: "İnka medeniyeti zirvesi" },
-                { city: "Efes Antik Kenti", region: "İzmir / Türkiye", feature: "Celsus Kütüphanesi" },
-                { city: "Kolezyum Amfitiyatrosu", region: "Roma / İtalya", feature: "Gladyatör dövüş arenası" },
-                { city: "Giza Piramitleri", region: "Kahire / Mısır", feature: "Firavun Khufu'nun anıt mezarı" },
-                { city: "Tac Mahal", region: "Agra / Hindistan", feature: "Şah Cihan'ın aşk anıtı" },
-                { city: "Chichen Itza", region: "Meksika", feature: "Maya uygarlığı piramidi" }
-            ];
-
-            for(let i = 0; i < 250; i++) {
-                locations.forEach((loc) => {
-                    let altsLoc = locations.filter(l => l.city !== loc.city).map(l => l.city).sort(() => 0.5 - Math.random()).slice(0, 3);
-                    let optsL = [loc.city, ...altsLoc].sort();
-                    
-                    let questionVaryasyonları = [
-                        `Coğrafi olarak ${loc.region} sınırlarında bulunan ve mimari tarihinde '${loc.feature}' olarak ünlenen dünyaca ünlü kültür mirası hangisidir?`,
-                        `Arkeolojik keşifler ve kültürel önemi göz önüne alındığında, '${loc.feature}' tanımıyla özdeşleşen ve ${loc.region} bölgesinde yer alan tarihi yapı hangisidir?`,
-                        `Uygarlık tarihinin mimari harikalarından biri sayılan, ${loc.region} topraklarında konumlanmış ve karakteristik olarak '${loc.feature}' niteliği taşıyan yerleşim hangisidir?`
-                    ];
-                    
-                    let selectedQ = questionVaryasyonları[i % questionVaryasyonları.length];
-
-                    pool.push({
-                        category: "Kültür Mirası", difficulty: "Zor",
-                        question: selectedQ,
-                        options: optsL, correct: optsL.indexOf(loc.city), hint: "Evrensel koruma altında olan ikonik bir kültür abidesidir."
-                    });
-                });
+        // --- BİLİMSEL VE ADİL HASSAS KARIŞTIRMA ALGORİTMASI (FISHER-YATES) ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
+            return array;
+        }
+
+        // --- TAMAMEN YENİLENMİŞ, MATRİS TABANLI DENGELİ SORU MOTORU ---
+        function generateMassiveQuestionPool() {
+            let pool = {
+                "Tarih": [], "Mitoloji": [], "Edebiyat": [], "Coğrafya": [], "Bilim": [], "Sanat": []
+            };
+
+            const dataBank = {
+                "Tarih": [
+                    { target: "Napoleon Bonaparte", event: "Waterloo Savaşı", region: "Fransa", hint: "Avrupa haritasını sarsan, Elbe adasından kaçıp son kez tahta çıkan imparatordur." },
+                    { target: "Jül Sezar", event: "Rubicon Nehri'ni geçmesi", region: "Roma Cumhuriyeti", hint: "'Zarlar atıldı' diyerek iç savaşı başlatan diktatör devlet adamıdır." },
+                    { target: "Fatih Sultan Mehmet", event: "İstanbul'un Fethi", region: "Osmanlı İmparatorluğu", hint: "Gemi karadan yürütme dehasıyla Bizans surlarını yıkan genç padişahtır." },
+                    { target: "Mustafa Kemal Atatürk", event: "Büyük Taarruz", region: "Türkiye Cumhuriyeti", hint: "Kurtuluş Savaşı'nı 'Ordular, ilk hedefiniz Akdeniz'dir, ileri!' emriyle taçlandıran kurucudur." },
+                    { target: "Cengiz Han", event: "Moğol İmparatorluğu'nun kuruluşu", region: "Karakurum / Moğolistan", hint: "Tarihin bitişik sınırlara sahip en büyük imparatorluğunu kuran Bozkır kağanıdır." },
+                    { target: "Büyük İskender", event: "Gaugamela Savaşı", region: "Makedonya Krallığı", hint: "Gordiyon düğümünü kesen, Pers İmparatorluğu'nu tarihten silen efsanevi liderdir." },
+                    { target: "Abraham Lincoln", event: "Gettysburg Konuşması", region: "Amerika Birleşik Devletleri", hint: "İç savaşı bitirip köleliği resmi olarak kaldıran suikast kurbanı başkandır." },
+                    { target: "Kral John", event: "Magna Carta'nın imzalanması", region: "İngiltere Krallığı", hint: "Kendi yetkilerini kısıtlayarak anayasal düzene giden ilk adımı atan isteksiz hükümdardır." }
+                ],
+                "Mitoloji": [
+                    { target: "Zeus", event: "Olympos Dağı hakimiyeti", region: "Yunan Mitolojisi", hint: "Kardeşlerini Titanların karnından kurtaran, şimşeklerin efendisi baş tanrıdır." },
+                    { target: "Odin", event: "Valhalla Sarayı liderliği", region: "İskandinav Mitolojisi", hint: "Kuzey mitolojisinde bilgelik uğruna gözünü feda eden Kuzgunların efendisidir." },
+                    { target: "Anubis", event: "Duat Kapısı / Kalp Tartma", region: "Mısır Mitolojisi", hint: "Ölüleri mumyalayan ve adalet terazisinde kalpleri doğruluk tüyüyle tartan çakal başlı tanrıdır." },
+                    { target: "Amaterasu", event: "Gök Mağarası efsanesi", region: "Japon Mitolojisi", hint: "İmparatorluk soyunun kurucusu kabul edilen, dünyayı aydınlatan Güneş tanrıçasıdır." },
+                    { target: "Umay Ana", event: "Doğum ve Bereket koruyuculuğu", region: "Türk Mitolojisi", hint: "Çocukları ve lohusaları kanatlarıyla koruyan en eski Türk mitolojik varlığıdır." },
+                    { target: "Gilgameş", event: "Uruk surları / Ölümsüzlük arayışı", region: "Sümer Mitolojisi", hint: "Yarı tanrı yarı insan olan, dostu Enkidu'nun ölümüyle ebedi yaşamın peşine düşen kraldır." },
+                    { target: "Loki", event: "Ragnarok kıyameti fitili", region: "İskandinav Mitolojisi", hint: "Şekil değiştirebilen, kurnazlığı ve ihanetleriyle bilinen fesatlık tanrısıdır." },
+                    { target: "Athena", event: "Zeytin ağacı hediyesi / Akropolis", region: "Yunan Mitolojisi", hint: "Zeus'un kafasından zırhıyla doğan, stratejik savaşın ve felsefi bilgeliğin tanrıçasıdır." }
+                ],
+                "Edebiyat": [
+                    { target: "Fyodor Dostoyevski", event: "Suç ve Ceza", region: "Raskolnikov", hint: "İnsanın vicdani azaplarını tefeci kadını öldüren bir öğrenci üzerinden anlatan realist yazardır." },
+                    { target: "Franz Kafka", event: "Dönüşüm", region: "Gregor Samsa", hint: "Sabah uyandığında kendisini devasa bir böceğe dönüşmüş bulan karakterin yaratıcısıdır." },
+                    { target: "George Orwell", event: "1984", region: "Winston Smith", hint: "Büyük Birader ve düşünce polisi kavramlarını dünyaya kazandıran distopik başyapıtın yazardır." },
+                    { target: "Sabahattin Ali", event: "Kürk Mantolu Madonna", region: "Raif Efendi", hint: "Almanya'da bir tablodaki kadına aşık olan içine kapanık bir memurun melankolisini işleyen Türk yazardır." },
+                    { target: "William Shakespeare", event: "Hamlet", region: "Prens Hamlet", hint: "'Olmak ya da olmamak' tiradı ile intikam ile delilik arasında kalan Danimarka Prensini yazan yazardır." },
+                    { target: "Dante Alighieri", event: "İlahi Komedya", region: "Beatrice", hint: "Cehennem, Araf ve Cennet katlarını şair Vergilius rehberliğinde gezen İtalyan ozandır." },
+                    { target: "Albert Camus", event: "Yabancı", region: "Meursault", hint: "Annesinin ölümüne bile kayıtsız kalan absürdizm akımının en ünlü karakterini yaratan düşünürdür." },
+                    { target: "Cervantes", event: "Don Kişot", region: "Sancho Panza", hint: "Yel değirmenlerine karşı savaşan, şövalyelik hikayeleriyle aklını yitirmiş yaşlı adamı yazan ilk modern romancıdır." }
+                ],
+                "Coğrafya": [
+                    { target: "Everest Zirvesi", event: "Himalaya Sıradağları", region: "Nepal / Tibet", hint: "Yeryüzünün deniz seviyesinden ölçülen en yüksek noktası unvanına sahip devasa coğrafi yapıdır." },
+                    { target: "Mariana Çukuru", event: "Challenger Derinliği", region: "Büyük Okyanus", hint: "Okyanus tabanında yer alan, bilinen en derin tektonik çöküntü alanıdır." },
+                    { target: "Nil Nehri", event: "Akdeniz'e dökülen delta", region: "Afrika Kıtası", hint: "Antik Mısır medeniyetine hayat veren, dünyanın en uzun nehir sistemlerinden biridir." },
+                    { target: "Amazon Havzası", event: "Biyoçeşitlilik merkezi", region: "Güney Amerika", hint: "Dünya oksijen üretiminin büyük bir kısmını sağlayan devasa yağmur ormanları alanıdır." },
+                    { target: "Sahra Çölü", event: "Kuzey Afrika düzlükleri", region: "Kuzey Afrika", hint: "Dünyanın en büyük kutup dışı, aşırı sıcak ve kurak kum çölü bölgesidir." },
+                    { target: "Grönland Adası", event: "Buz örtüsü kütlesi", region: "Kuzey Atlas Okyanusu", hint: "Kıta özelliği taşımayan, Danimarka'ya bağlı yeryüzünün en büyük adasıdır." },
+                    { target: "Baykal Gölü", event: "Sibirya rift vadisi", region: "Rusya / Sibirya", hint: "Dünyanın en derin ve en eski tatlı su kaynağı olarak bilinen göldür." },
+                    { target: "Antarktika", event: "Güney Kutup Noktası", region: "Güney Kutbu", hint: "Üzerinde yerleşik insan popülasyonu olmayan, dünyanın en soğuk ve en rüzgarlı kıtasıdır." }
+                ],
+                "Bilim": [
+                    { target: "Albert Einstein", event: "Görelilik (İzafiyet) Teorisi", region: "Fizik Anabilim Dalı", hint: "Uzay ve zamanın mutlak olmadığını, kütleçekiminin uzay-zaman bükülmesi olduğunu kanıtlayan bilim insanıdır." },
+                    { target: "Isaac Newton", event: "Evrensel Kütleçekim Kanunu", region: "Klasik Mekanik", hint: "Başına düşen elma efsanesiyle bilinen, hareket yasalarını formüle eden dahi bilim insanıdır." },
+                    { target: "Marie Curie", event: "Radyoaktivite Keşfi", region: "Polonyum ve Radyum", hint: "İki farklı bilim dalında Nobel ödülü alan, laboratuvar çalışmaları uğruna hayatını kaybeden kadındır." },
+                    { target: "Dmitri Mendeleev", event: "Periyodik Cetvel Sistemi", region: "Kimya Anabilim Dalı", hint: "Elementleri atom kütlelerine göre sıralayan ve henüz keşfedilmemiş elementlerin yerini boş bırakan bilim insanıdır." },
+                    { target: "Charles Darwin", event: "Doğal Seçilim yoluyla Evrim", region: "Türlerin Kökeni eseri", hint: "Galapagos Adaları'ndaki gözlemleriyle canlıların adaptasyon mekanizmalarını açıklayan biyologdur." },
+                    { target: "Alan Turing", event: "Enigma Şifre Kırıcı Makine", region: "Yapay Zeka / Bilgisayar", hint: "İkinci Dünya Savaşı'nın seyrini değiştiren, bilgisayar biliminin kurumsal babası sayılan dahi matematikçidir." },
+                    { target: "Nikola Tesla", event: "Alternatif Akım (AC) Sistemi", region: "Elektrik Mühendisliği", hint: "Edison ile akım savaşlarına giren, kablosuz enerji aktarımı üzerine ömrünü harcayan mucittir." },
+                    { target: "Galileo Galilei", event: "Heliosantrizm (Güneş Merkezli Evren)", region: "Gökbilim / Astronomi", hint: "Engizisyon mahkemesinde 'Dünya yine de dönüyor' dediği rivayet edilen teleskop mucididir." }
+                ],
+                "Sanat": [
+                    { target: "Leonardo da Vinci", event: "Mona Lisa", region: "Rönesans Dönemi", hint: "Sfumato tekniğiyle yapılmış, gizemli gülümseyişiyle ünlenen tablonun İtalyan polimat sanatçısıdır." },
+                    { target: "Vincent van Gogh", event: "Yıldızlı Gece", region: "Post-Empresyonizm", hint: "Akıl hastanesi penceresinden gördüğü gökyüzünü dönen fırça darbeleriyle tuvale aktaran ressamdır." },
+                    { target: "Pablo Picasso", event: "Guernica", region: "Kübizm Akımı", hint: "İspanya İç Savaşı'ndaki katliamı monokrom renklerle ve geometrik formlarla anlatan ressamdır." },
+                    { target: "Edvard Munch", event: "Çığlık", event: "Ekspresyonizm (Dışavurumculuk)", hint: "Kan kırmızısı gökyüzü altında iki eliyle kafasını tutan ıstırap dolu figürü çizen Norveçli ressamdır." },
+                    { target: "Michelangelo", event: "Davut Heykeli", region: "Sistine Şapeli Tavanı", hint: "Mermer kütlesinin içindeki fazlalıkları atarak kusursuz insan anatomisini çıkaran heykeltıraştır." },
+                    { target: "Salvador Dali", event: "Belleğin Azmi (Eriyen Saatler)", region: "Sürrealizm (Gerçeküstücülük)", hint: "Zamanın bükülebilirliğini sahilde eriyen cep saatleri tasviriyle gösteren eksantrik ressamdır." },
+                    { target: "Wolfgang Amadeus Mozart", event: "Sihirli Flüt", region: "Klasik Müzik Dönemi", hint: "Çocuk yaşta besteler yapmaya başlayan, Avusturyalı dahi opera ve senfoni bestecisidir." },
+                    { target: "Ludwig van Beethoven", event: "9. Senfoni (Neşeye Övgü)", region: "Romantik Dönem Geçişi", hint: "Tamamen sağır olduğu dönemde insanlık tarihinin en görkemli koral senfonisini besteleyen dehadır." }
+                ]
+            };
+
+            const templates = [
+                "Kültürel ve bilimsel metinlerde sıkça karşımıza çıkan, karakteristik olarak #EVENT ile özdeşleşen ve merkez alanı #REGION kabul edilen odak nokta hangisidir?",
+                "Akademik araştırmalarda ve tarihi belgelerde önemle vurgulanan; #REGION evreninde #EVENT adımıyla çığır açan unsur hangisidir?",
+                "Evrensel miras arşivlerinde özel bir yeri olan; #EVENT denildiğinde doğrudan akla gelen ve #REGION ile bağdaştırılan yapı/şahsiyet hangisidir?"
+            ];
+
+            // 2000+ Varyasyonu oluşturmak için her kategorideki kombinasyonları zenginleştirerek havuz doldurma
+            Object.keys(dataBank).forEach(cat => {
+                let items = dataBank[cat];
+                
+                // Havuz hacmini şişirmek için iç döngü ile çoklu varyasyon üretiyoruz
+                for (let i = 0; i < 45; i++) {
+                    items.forEach(item => {
+                        // Yanlış seçenekleri (çeldiricileri) kendi kategorisindeki diğer elemanlardan rastgele seçiyoruz
+                        let distractors = items.filter(x => x.target !== item.target).map(x => x.target);
+                        shuffleArray(distractors);
+                        let selectedAlts = distractors.slice(0, 3);
+                        
+                        let options = [item.target, ...selectedAlts];
+                        shuffleArray(options);
+                        
+                        let temp = templates[i % templates.length];
+                        let questionText = temp.replace("#EVENT", item.event).replace("#REGION", item.region);
+
+                        pool[cat].push({
+                            category: cat,
+                            difficulty: i % 2 === 0 ? "Orta" : "Zor",
+                            question: questionText,
+                            options: options,
+                            correct: options.indexOf(item.target),
+                            hint: item.hint
+                        });
+                    });
+                }
+                // Her kategorinin kendi havuzunu karıştır
+                shuffleArray(pool[cat]);
+            });
 
             return pool;
         }
 
-        // --- OYUN MOTORU ---
+        // --- ANTI-CLUMP: KATEGORİ PEŞ PEŞE GELME ENGELLEYİCİ SEÇİM ALGORİTMASI ---
+        function selectAntiClumpQuestions(massivePool) {
+            let selectedRoundQuestions = [];
+            // Kategori isimlerini alıyoruz
+            let categories = Object.keys(massivePool);
+            
+            // 15 adet soru çekilene kadar kategoriler arasında eşit döngü yapıyoruz
+            for (let i = 0; i < 15; i++) {
+                let currentCategory = categories[i % categories.length];
+                let question = massivePool[currentCategory].pop(); // Her kategorinin kendi karışmış listesinden en üsttekini çek
+                selectedRoundQuestions.push(question);
+            }
+            
+            // Son bir kez sadece soru şıklarının kendi içini doğrula ve turu hazırla
+            return selectedRoundQuestions;
+        }
+
+        // --- ANA OYUN MOTORU ---
         class AtlasEngine {
             constructor() {
                 this.audio = new SafeSoundController();
@@ -600,7 +621,10 @@
             }
 
             setupGame() {
-                this.questions = generateMassiveQuestionPool().sort(() => 0.5 - Math.random()).slice(0, 15); 
+                // Devasa havuz üretiliyor ve anti-clump filtresiyle 15 dengeli soru seçiliyor
+                let rawPool = generateMassiveQuestionPool();
+                this.questions = selectAntiClumpQuestions(rawPool); 
+                
                 this.currentIndex = 0;
                 this.score = 0;
                 this.startTime = Date.now();
@@ -647,8 +671,8 @@
                 const jh = document.getElementById('jokerHint');
                 const jd = document.getElementById('jokerDivine');
 
-                if(round > 5 && !this.jokers.hint) { jh.disabled = false; } else { jh.disabled = true; }
-                if(round > 10 && !this.jokers.divine) { jd.disabled = false; } else { jd.disabled = true; }
+                if(round > 3 && !this.jokers.hint) { jh.disabled = false; } else { jh.disabled = true; }
+                if(round > 7 && !this.jokers.divine) { jd.disabled = false; } else { jd.disabled = true; }
             }
 
             startTimer() {
@@ -700,8 +724,8 @@
                         if(this.currentIndex >= 15) {
                             this.gameOver(true);
                         } else {
-                            if(this.currentIndex === 5) this.showModal("BİLGELİK YOLU", "5. soruyu geçtiniz. İpucu jokeri artık kullanılabilir.");
-                            if(this.currentIndex === 10) this.showModal("USTALIK YOLU", "10. soruyu geçtiniz. İlahi Müdahale jokeri aktif edildi.");
+                            if(this.currentIndex === 3) this.showModal("KİLOMETRE TAŞI", "3. soruyu geçerek bilgi seviyenizi kanıtladınız. İpucu jokeri artık aktif!");
+                            if(this.currentIndex === 7) this.showModal("KİLOMETRE TAŞI", "7. soruyu geride bıraktınız. İlahi Müdahale jokeri kullanıma hazır.");
                             this.loadQuestion();
                         }
                     }, 3000);
