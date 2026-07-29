@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kültür Atlası | YARIŞMA</title>
+    <title>Kültür Atlası | Premium Gold</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
@@ -143,8 +143,30 @@
         .lifeline-btn {
             background: var(--panel-bg); color: var(--text-main); border: 1px solid var(--option-border);
             padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: 700; margin-left: 5px;
+            transition: all 0.2s ease;
         }
-        .lifeline-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+        .lifeline-btn:disabled { opacity: 0.15; cursor: not-allowed; box-shadow: none !important; }
+
+        /* TANRISAL JOKER ÖZEL GLOW EFFECT */
+        .tanrisal-glow {
+            border-color: #ffd700 !important;
+            color: #ffd700 !important;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+            font-weight: 800;
+        }
+        .tanrisal-glow:hover:not(:disabled) {
+            background: rgba(255, 215, 0, 0.15) !important;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5) !important;
+            transform: translateY(-2px);
+        }
+        /* KİLİTLİ / AKTİF OLMAYAN DURUM */
+        .tanrisal-glow:disabled {
+            opacity: 0.15 !important;
+            box-shadow: none !important;
+            border-color: var(--option-border) !important;
+            color: var(--text-muted) !important;
+            cursor: not-allowed;
+        }
 
         .question-board { padding: 45px; min-height: 320px; display: flex; flex-direction: column; justify-content: center; }
         .question-metadata { display: flex; gap: 12px; margin-bottom: 20px; }
@@ -160,7 +182,14 @@
             transition: all 0.2s ease; position: relative;
         }
         .option-node:hover:not(.disabled) { border-color: var(--primary-accent); background: var(--option-hover-bg); }
-        .option-node.selected-lock { background: rgba(0, 200, 120, 0.4); border-color: var(--primary-accent); }
+        
+        /* SEÇİLEN ŞIKKIN KİLİTLENME VE TİK TAK SÜRECİNDEKİ YANIP SÖNME ANİMASYONU */
+        .option-node.selected-lock { 
+            background: rgba(230, 180, 0, 0.25) !important; 
+            border-color: #ffd700 !important;
+            animation: lockPulse 0.5s infinite alternate;
+        }
+        @keyframes lockPulse { from { opacity: 0.7; } to { opacity: 1; } }
         
         .option-node.reveal-correct { background: rgba(0, 255, 136, 0.4) !important; border-color: var(--correct-color) !important; }
         .option-node.reveal-wrong { background: rgba(255, 51, 102, 0.4) !important; border-color: var(--wrong-color) !important; }
@@ -207,7 +236,7 @@
         <header class="app-header">
             <div>
                 <span class="logo-title">KÜLTÜR ATLASI</span>
-                <span class="logo-subtitle">Premium Edition</span>
+                <span class="logo-subtitle">Premium Gold Edition</span>
             </div>
             <div class="header-controls" style="display: flex; gap: 10px;">
                 <div class="audio-controls">
@@ -222,7 +251,7 @@
             <!-- GİRİŞ EKRANI -->
             <section id="welcomeState" class="state-view screen-card glass-panel visible">
                 <h1 class="brand-title">KÜLTÜR ATLASI</h1>
-                <p class="brand-desc">Genel Kültür Bilgini Tartmaya Var Mısın?</p>
+                <p class="brand-desc">6 ana disipline dengelenmiş, benzersiz algoritmalarla donatılmış kesintisiz entelektüel mücadele.</p>
                 <button id="startGameBtn" class="action-btn glow-btn">YARIŞMAYA BAŞLA</button>
             </section>
 
@@ -242,6 +271,7 @@
                     <div class="lifelines-container">
                         <button id="jokerFifty" class="lifeline-btn">50:50</button>
                         <button id="jokerHint" class="lifeline-btn" disabled>İpucu</button>
+                        <button id="jokerGodly" class="lifeline-btn tanrisal-glow" disabled>TANRISAL</button>
                     </div>
                 </div>
 
@@ -257,7 +287,7 @@
 
             <!-- SONUÇ EKRANI -->
             <section id="resultsState" class="state-view screen-card glass-panel hidden">
-                <h2 id="resultTitle" class="brand-title">TEST BİTTİ</h2>
+                <h2 id="resultTitle" class="brand-title">OYUN BİTTİ</h2>
                 <div class="metrics-dashboard">
                     <table class="metrics-table">
                         <tbody>
@@ -309,6 +339,7 @@
                 osc.start(); osc.stop(this.ctx.currentTime + dur);
             }
             tick(panic) { this.playTone(panic ? 900 : 600, 'sine', 0.05, 0.15); }
+            suspenseTick() { this.playTone(750, 'triangle', 0.06, 0.25); }
             correct() { this.playTone(523, 'sine', 0.15, 0.3); setTimeout(() => this.playTone(659, 'sine', 0.2, 0.3), 100); }
             wrong() { this.playTone(150, 'sawtooth', 0.4, 0.4); }
             lock() { this.playTone(280, 'triangle', 0.15, 0.3); }
@@ -367,7 +398,7 @@
                 { id: "s3", target: "Müzik Sanatı", event: "Ressamın atölyesinde arkası dönük modeli ve klarnet çalan kadını çizmesi", region: "Barok Dönemi", hint: "Işığın ustası Johannes Vermeer'in perspektif dehasını sergilediği gizemli tablosu." },
                 { id: "s4", target: "Düşünen Adam", event: "Cehennem Kapısı projesinin bir parçası olarak tasarlanan bronz döküm figür", region: "Modern Heykel", hint: "Auguste Rodin'in derin bir felsefi tefekkür halindeki insan anatomisini işlediği kült yapıt." },
                 { id: "s5", target: "Yıldızlı Gece", event: "Akıl hastanesi penceresinden görülen gökyüzünün girdap şeklinde boyanması", region: "Post-Empresyonizm", hint: "Vincent van Gogh'un intiharından kısa süre önce sarı ve mavi zıtlığıyla ürettiği şaheser." },
-                { id: "s6", target: "Gece Nöbeti", event: "Yüzbaşı Banninck Cocq ve müfreze üyelerinin dinamik kompozisyonu", region: "Hollanda Altın Çağı", hint: "Rembrandt'ın gölge-ışık (chiaroscuro) tekniğinde devrim yarattığı devasa boyutlu grup portresi." },
+                { id: "s6", talk: "Gece Nöbeti", event: "Yüzbaşı Banninck Cocq ve müfreze üyelerinin dinamik kompozisyonu", region: "Hollanda Altın Çağı", hint: "Rembrandt'ın gölge-ışık (chiaroscuro) tekniğinde devrim yarattığı devasa boyutlu grup portresi." },
                 { id: "s7", target: "Atina Okulu", event: "Platon ve Aristoteles'in merkezde felsefi tartışma yürüttüğü fresk yapısı", region: "Vatikan Sarayı", hint: "Raffaello Sanzio'nun Antik Çağ filozoflarını aynı çatı altında resmettiği Rönesans zirvesi." }
             ]
         };
@@ -388,7 +419,7 @@
                 this.timerVal = 60;
                 this.timerInterval = null;
                 this.startTime = null;
-                this.jokers = { fifty: false, hint: false };
+                this.jokers = { fifty: false, hint: false, godly: false };
 
                 this.views = {
                     welcome: document.getElementById('welcomeState'),
@@ -405,6 +436,7 @@
                 document.getElementById('modalCloseBtn').addEventListener('click', () => { this.views.modal.classList.add('hidden'); });
                 document.getElementById('jokerFifty').addEventListener('click', () => this.triggerFiftyFifty());
                 document.getElementById('jokerHint').addEventListener('click', () => this.triggerHint());
+                document.getElementById('jokerGodly').addEventListener('click', () => this.triggerGodly());
                 document.getElementById('themeToggleBtn').addEventListener('click', () => this.toggleTheme());
 
                 this.initBackgroundParticles();
@@ -446,17 +478,14 @@
                 render();
             }
 
-            // --- SESSİZ VE OTOMATİK HAFIZA SIFIRLAMALI SİSTEM ---
             buildRoundQuestions() {
                 let bannedIds = this.getBannedIds();
                 let categories = Object.keys(MASTER_DATA);
                 let roundList = [];
                 
-                // Toplam soru sayısı kontrolü
                 let totalItems = 0;
                 categories.forEach(c => totalItems += MASTER_DATA[c].length);
                 
-                // Havuz dolmaya yakınsa çaktırmadan arkada kendi kendini temizler
                 if (bannedIds.length >= totalItems - 15) {
                     localStorage.removeItem('atlas_banned_questions_v2');
                     bannedIds = [];
@@ -532,7 +561,7 @@
                 this.currentIndex = 0;
                 this.score = 0;
                 this.startTime = Date.now();
-                this.jokers = { fifty: false, hint: false };
+                this.jokers = { fifty: false, hint: false, godly: false };
                 document.getElementById('jokerFifty').disabled = false;
                 
                 this.showView('gameplay');
@@ -560,7 +589,12 @@
                     grid.appendChild(btn);
                 });
 
+                // Jokerlerin Aktiflik Kontrolü
                 document.getElementById('jokerHint').disabled = (this.currentIndex < 2 || this.jokers.hint);
+                
+                // TANRISAL JOKER KONTROLÜ: 10. sorudan sonra (11. soru ve sonrası, yani index >= 10) aktif olur.
+                document.getElementById('jokerGodly').disabled = (this.currentIndex < 10 || this.jokers.godly);
+
                 this.startTimerSystem();
             }
 
@@ -589,25 +623,33 @@
                 for(let n of nodes) n.style.pointerEvents = 'none';
                 nodes[idx].classList.add('selected-lock');
 
-                setTimeout(() => {
-                    const q = this.roundQuestions[this.currentIndex];
-                    if (idx === q.correct) {
-                        nodes[idx].classList.replace('selected-lock', 'reveal-correct');
-                        this.audio.correct();
-                        this.score += 300 + (this.timerVal * 15);
-                        this.currentIndex++;
-                        
-                        setTimeout(() => {
-                            if (this.currentIndex >= 15) this.endGameSequence(true);
-                            else this.loadActiveQuestion();
-                        }, 2000);
+                let elapsedSuspense = 0;
+                const suspenseInterval = setInterval(() => {
+                    elapsedSuspense++;
+                    if (elapsedSuspense < 3) {
+                        this.audio.suspenseTick();
                     } else {
-                        nodes[idx].classList.replace('selected-lock', 'reveal-wrong');
-                        nodes[q.correct].classList.add('reveal-correct');
-                        this.audio.wrong();
-                        setTimeout(() => this.endGameSequence(false), 2500);
+                        clearInterval(suspenseInterval);
+                        
+                        const q = this.roundQuestions[this.currentIndex];
+                        if (idx === q.correct) {
+                            nodes[idx].classList.replace('selected-lock', 'reveal-correct');
+                            this.audio.correct();
+                            this.score += 300 + (this.timerVal * 15);
+                            this.currentIndex++;
+                            
+                            setTimeout(() => {
+                                if (this.currentIndex >= 15) this.endGameSequence(true);
+                                else this.loadActiveQuestion();
+                            }, 2000);
+                        } else {
+                            nodes[idx].classList.replace('selected-lock', 'reveal-wrong');
+                            nodes[q.correct].classList.add('reveal-correct');
+                            this.audio.wrong();
+                            setTimeout(() => this.endGameSequence(false), 2500);
+                        }
                     }
-                }, 1500);
+                }, 1000);
             }
 
             triggerFiftyFifty() {
@@ -637,6 +679,21 @@
 
                 document.getElementById('modalBody').innerText = this.roundQuestions[this.currentIndex].hint;
                 this.views.modal.classList.remove('hidden');
+            }
+
+            triggerGodly() {
+                // Güvenlik check'i: 10. sorudan önce tetiklenmesini engelle
+                if (this.jokers.godly || this.currentIndex < 10) return;
+                this.jokers.godly = true;
+                document.getElementById('jokerGodly').disabled = true;
+
+                this.audio.playTone(350, 'sine', 0.08, 0.2);
+                setTimeout(() => this.audio.playTone(450, 'sine', 0.08, 0.2), 80);
+                setTimeout(() => this.audio.playTone(550, 'sine', 0.08, 0.2), 160);
+                setTimeout(() => this.audio.playTone(700, 'sine', 0.25, 0.3), 240);
+
+                const q = this.roundQuestions[this.currentIndex];
+                this.handleSelection(q.correct);
             }
 
             endGameSequence(isVictory) {
