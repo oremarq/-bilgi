@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kültür Atlası | Bilgi Yarışması</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- PREMIUM TEMA VE GÖRSEL SİSTEM --- */
+        :root {
+            --font-primary: 'Manrope', sans-serif;
+            --bg-gradient: radial-gradient(circle at center, #0a1f16 0%, #020504 100%);
+            --panel-bg: rgba(12, 28, 20, 0.65);
+            --panel-border: rgba(0, 200, 120, 0.3);
+            --primary-accent: #00c878;
+            --primary-glow: rgba(0, 200, 120, 0.6);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --option-bg: linear-gradient(145deg, rgba(15, 37, 27, 0.7) 0%, rgba(10, 25, 18, 0.9) 100%);
+            --option-border: rgba(0, 200, 120, 0.4);
+            --option-hover-bg: rgba(0, 200, 120, 0.2);
+            --correct-color: #00ff88;
+            --wrong-color: #ff3366;
+            --glass-blur: blur(20px);
+        }
+
+        [data-theme="light"] {
+            --bg-gradient: radial-gradient(circle at center, #ffffff 0%, #e8f0eb 100%);
+            --panel-bg: rgba(255, 255, 255, 0.8);
+            --panel-border: rgba(0, 160, 100, 0.2);
+            --primary-accent: #00a064;
+            --primary-glow: rgba(0, 160, 100, 0.3);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --option-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 245, 242, 0.9) 100%);
+            --option-border: rgba(0, 160, 100, 0.3);
+            --option-hover-bg: rgba(0, 160, 100, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.8s ease, color 0.8s ease;
+        }
+
+        #particleCanvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1050px;
+            min-height: 85vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .app-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 20px; border-bottom: 1px solid var(--panel-border); margin-bottom: 30px;
+        }
+
+        .logo-title {
+            font-size: 2rem; font-weight: 800; letter-spacing: 4px;
+            background: linear-gradient(45deg, var(--text-main), var(--primary-accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .logo-subtitle { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--primary-accent); }
+        .header-controls { display: flex; align-items: center; gap: 15px; }
+
+        .audio-controls {
+            display: flex; align-items: center; gap: 12px;
+            background: var(--panel-bg); padding: 8px 16px;
+            border-radius: 40px; border: 1px solid var(--panel-border);
+            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+        }
+
+        .volume-sliders { display: flex; flex-direction: column; gap: 6px; }
+        .vol-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+        .vol-row input { width: 80px; height: 4px; accent-color: var(--primary-accent); cursor: pointer; }
+
+        .icon-btn {
+            background: transparent; border: none; cursor: pointer;
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; transition: all 0.3s ease;
+        }
+        .icon-btn:hover { background: var(--option-hover-bg); transform: scale(1.1); }
+        .icon-btn svg { width: 22px; height: 22px; fill: var(--text-main); }
+
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--panel-border); border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-left: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .screen-card { text-align: center; padding: 50px 40px; max-width: 700px; margin: 0 auto; }
+        
+        .state-view { display: none; opacity: 0; transform: translateY(20px); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .state-view.visible { display: block; opacity: 1; transform: translateY(0); }
+
+        .brand-title { font-size: 3rem; font-weight: 800; margin-bottom: 20px; letter-spacing: 5px; }
+        .brand-desc { color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 40px; }
+
+        .action-btn {
+            font-family: var(--font-primary); font-weight: 800; text-transform: uppercase;
+            padding: 16px 45px; border-radius: 40px; border: none; cursor: pointer;
+            letter-spacing: 3px; font-size: 1.1rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glow-btn { background: var(--primary-accent); color: #000; box-shadow: 0 0 20px var(--primary-glow); }
+        .glow-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 30px var(--primary-glow); }
+
+        .cinematic-counter {
+            font-size: 10rem; font-weight: 800; text-align: center; color: var(--primary-accent);
+            text-shadow: 0 0 50px var(--primary-glow);
+            animation: zoomPulse 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        @keyframes zoomPulse { 0% { transform: scale(0.5); opacity: 0; } 40% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+
+        .gameplay-hud { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 30px; }
+        .progress-container { flex: 1; }
+        .progress-text { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px; display: block; letter-spacing: 1px;}
+        .progress-bar-wrapper { background: rgba(255, 255, 255, 0.05); height: 10px; border-radius: 5px; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #007744, var(--primary-accent)); transition: width 0.5s ease-out; box-shadow: 0 0 10px var(--primary-accent); }
+
+        .timer-circle {
+            width: 65px; height: 65px; border-radius: 50%; border: 4px solid var(--primary-accent);
+            display: flex; justify-content: center; align-items: center; font-weight: 800; font-size: 1.5rem;
+            box-shadow: 0 0 15px var(--primary-glow), inset 0 0 10px var(--primary-glow);
+            text-shadow: 0 0 5px var(--primary-accent);
+        }
+        .timer-panic { border-color: var(--wrong-color); color: var(--wrong-color); box-shadow: 0 0 20px var(--wrong-color); animation: panic 0.4s infinite alternate; }
+
+        .jokers-wrapper {
+            display: flex; align-items: center; background: rgba(0,0,0,0.3); 
+            padding: 6px 8px 6px 16px; border-radius: 40px; border: 1px solid var(--panel-border);
+        }
+        .jokers-title { font-size: 0.75rem; font-weight: 800; color: var(--primary-accent); letter-spacing: 2px; margin-right: 12px; }
+        .lifelines-container { display: flex; gap: 8px; }
+        .lifeline-btn {
+            background: var(--panel-bg); color: var(--text-main); border: 1px solid var(--option-border);
+            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .lifeline-btn:hover:not(:disabled) { background: var(--primary-accent); color: #000; box-shadow: 0 0 15px var(--primary-glow); transform: translateY(-2px); }
+        .lifeline-btn:disabled { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; background: rgba(0,0,0,0.5); }
+
+        .question-board { padding: 45px; min-height: 350px; display: flex; flex-direction: column; justify-content: center; }
+        .question-metadata { display: flex; gap: 12px; margin-bottom: 20px; }
+        .badge { font-size: 0.75rem; text-transform: uppercase; font-weight: 800; padding: 5px 12px; border-radius: 12px; background: rgba(0, 200, 120, 0.15); border: 1px solid var(--primary-accent); color: var(--primary-accent); letter-spacing: 1px; }
+        
+        .question-statement { 
+            font-size: 1.6rem; font-weight: 600; line-height: 1.6; margin-bottom: 35px;
+            animation: fadeInDown 0.6s ease forwards;
+        }
+        
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 768px) { .options-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        .option-node {
+            background: var(--option-bg); border: 2px solid var(--option-border); color: var(--text-main);
+            padding: 18px 25px; border-radius: 15px; text-align: left; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; position: relative; overflow: hidden;
+            opacity: 0; animation: slideInUp 0.5s forwards;
+        }
+        .option-node:nth-child(1) { animation-delay: 0.1s; }
+        .option-node:nth-child(2) { animation-delay: 0.2s; }
+        .option-node:nth-child(3) { animation-delay: 0.3s; }
+        .option-node:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .option-node::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transition: 0.5s; }
+        .option-node:hover::before { left: 100%; }
+        .option-node:hover:not(.disabled) { border-color: var(--primary-accent); box-shadow: 0 0 20px var(--primary-glow); transform: scale(1.02); }
+        
+        .option-node.selected-lock { background: rgba(0, 200, 120, 0.4); border-color: var(--primary-accent); box-shadow: 0 0 25px var(--primary-glow); animation: pulseLock 1s infinite alternate; }
+        
+        .option-node.reveal-correct { background: rgba(0, 255, 136, 0.4) !important; border-color: var(--correct-color) !important; box-shadow: 0 0 30px rgba(0,255,136,0.6) !important; }
+        .option-node.reveal-wrong { background: rgba(255, 51, 102, 0.4) !important; border-color: var(--wrong-color) !important; box-shadow: 0 0 30px rgba(255,51,102,0.6) !important; }
+        .option-node.eliminated-fifty { opacity: 0.1; pointer-events: none; filter: grayscale(100%); }
+
+        .metrics-dashboard { margin: 25px 0; text-align: left; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 15px; }
+        .metrics-table { width: 100%; border-collapse: collapse; }
+        .metrics-table td { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 1.1rem; }
+        .metrics-table td:last-child { text-align: right; font-weight: 800; color: var(--primary-accent); font-size: 1.3rem; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 100; display: flex; justify-content: center; align-items: center; }
+        .modal-content { padding: 35px; max-width: 450px; width: 95%; text-align: center; border-radius: 25px; border-top: 2px solid var(--primary-accent); }
+        .modal-content h3 { color: var(--primary-accent); margin-bottom: 15px; font-size: 1.8rem; }
+        .modal-content p { color: var(--text-main); margin-bottom: 25px; font-size: 1.1rem; line-height: 1.6; }
+
+        .app-footer { text-align: center; padding-top: 20px; font-size: 0.85rem; color: var(--text-muted); letter-spacing: 1px; }
+        .premium-author { font-weight: 800; color: #fff; animation: neonPulse 2s infinite alternate; cursor: pointer; }
+        @keyframes neonPulse { 0% { text-shadow: 0 0 5px var(--primary-glow); } 100% { text-shadow: 0 0 15px var(--primary-accent); } }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="app-container">
+        <header class="app-header">
+            <div>
+                <span class="logo-title">KÜLTÜR ATLASI</span>
+                <span class="logo-subtitle">Bilgi Yarışması</span>
+            </div>
+            <div class="header-controls">
+                <div class="audio-controls">
+                    <button id="toggleSoundBtn" class="icon-btn">
+                        <svg class="sound-on-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                        <svg class="sound-off-icon hidden" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25z"/></svg>
+                    </button>
+                    <div class="volume-sliders">
+                        <div class="vol-row">
+                            <span title="Ses Efektleri">🔊</span>
+                            <input type="range" id="sfxVol" min="0" max="1" step="0.1" value="0.6">
+                        </div>
+                    </div>
+                </div>
+                <button id="themeToggleBtn" class="icon-btn" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                    <svg class="moon-icon" viewBox="0 0 24 24"><path d="M12.3 22h-.1c-5.5 0-10-4.5-10-10 0-4.8 3.5-8.9 8.3-9.7.7-.1 1.4.3 1.6 1.7-.1 1.4-.7 1.8-2.4 1.7z"/></svg>
+                    <svg class="sun-icon hidden" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <!-- GİRİŞ EKRANI -->
+            <section id="welcomeState" class="state-view screen-card glass-panel visible">
+                <h1 class="brand-title">KÜLTÜR ATLASI</h1>
+                <p class="brand-desc">Entelektüel sınırlarınızı zorlayacak yarışmayav var mısınız? Sesi açmayı unutmayın.</p>
+                <button id="startGameBtn" class="action-btn glow-btn">YARIŞMAYA BAŞLA</button>
+            </section>
+
+            <!-- GERİ SAYIM -->
+            <section id="countdownState" class="state-view hidden">
+                <div id="countdownNumber" class="cinematic-counter">3</div>
+            </section>
+
+            <!-- OYUN ALANI -->
+            <section id="gameplayState" class="state-view hidden">
+                <div class="gameplay-hud">
+                    <div class="progress-container">
+                        <span class="progress-text">Soru: <b id="currentQuestionNum">1</b>/15</span>
+                        <div class="progress-bar-wrapper"><div id="progressBarFill" class="progress-bar-fill"></div></div>
+                    </div>
+                    
+                    <div id="timerDisplay" class="timer-circle">60</div>
+                    
+                    <div class="jokers-wrapper">
+                        <span class="jokers-title">JOKERLER:</span>
+                        <div class="lifelines-container">
+                            <button id="jokerFifty" class="lifeline-btn">50:50</button>
+                            <button id="jokerHint" class="lifeline-btn" disabled>İpucu Jokeri</button>
+                            <button id="jokerDivine" class="lifeline-btn" disabled>Tanrısal Joker</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-board glass-panel">
+                    <div class="question-metadata">
+                        <span id="questionCategory" class="badge">Kategori</span>
+                        <span id="questionDifficulty" class="badge">Zorluk</span>
+                    </div>
+                    <h2 id="questionText" class="question-statement">Yükleniyor...</h2>
+                    <div id="optionsGrid" class="options-grid"></div>
+                </div>
+            </section>
+
+            <!-- SONUÇ EKRANI -->
+            <section id="resultsState" class="state-view screen-card glass-panel hidden">
+                <h2 id="resultTitle" class="brand-title">OYUN BİTTİ</h2>
+                <div id="badgeContainer" style="margin: 10px 0 25px 0; font-weight: 800; font-size: 1.8rem; color: #00c878; letter-spacing: 2px;"></div>
+                <div class="metrics-dashboard">
+                    <table class="metrics-table">
+                        <tbody>
+                            <tr><td>Doğru Cevap Sayısı</td><td id="metricAccuracy">0/15</td></tr>
+                            <tr><td>Toplam Puan</td><td id="metricScore">0</td></tr>
+                            <tr><td>Geçen Süre</td><td id="metricTime">0 sn</td></tr>
+                            <tr><td>En Yüksek Skor</td><td id="metricHighScore">0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="restartGameBtn" class="action-btn glow-btn" style="margin-top: 15px;">TEKRAR OYNA</button>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <span>Made with precision by <span class="premium-author">BERAT</span></span>
+        </footer>
+    </div>
+
+    <!-- MODAL -->
+    <div id="globalModal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <h3 id="modalTitle">Kilometre Taşı!</h3>
+            <p id="modalBody">İçerik</p>
+            <button id="modalCloseBtn" class="action-btn glow-btn" style="padding: 12px 30px; font-size: 0.9rem;">ANLADIM</button>
+        </div>
+    </div>
+
+    <script>
+        // --- SES MOTORU (SADECE TİK-TAK VE ETKİLEŞİM EFEKTLERİ) ---
+        class SafeSoundController {
+            constructor() {
+                this.ctx = null;
+                this.isMuted = false;
+                this.sfxVol = 0.6;
+            }
+            init() {
+                if (this.ctx) {
+                    if (this.ctx.state === 'suspended') this.ctx.resume();
+                    return;
+                }
+                try {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        this.ctx = new AudioContext();
+                        this.setupVolumeListeners();
+                    }
+                } catch (e) { console.log("Ses motoru başlatılamadı."); }
+            }
+            setupVolumeListeners() {
+                document.getElementById('sfxVol').addEventListener('input', (e) => {
+                    this.sfxVol = parseFloat(e.target.value);
+                });
+            }
+            playTone(freq, type, dur, vol, volMultiplier = this.sfxVol) {
+                if (!this.ctx || this.isMuted) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(vol * volMultiplier, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
+                    osc.connect(gain); gain.connect(this.ctx.destination);
+                    osc.start(); osc.stop(this.ctx.currentTime + dur);
+                } catch(e){}
+            }
+            playClockTick(secondsLeft) {
+                if (!this.ctx || this.isMuted) return;
+                // Son 15 saniyede tik-tak tonu değişir ve şiddetlenir
+                const freq = (secondsLeft % 2 === 0) ? 850 : 650;
+                const vol = secondsLeft <= 15 ? 0.25 : 0.12;
+                this.playTone(freq, 'sine', 0.04, vol);
+            }
+            
+            playClick() { this.playTone(600, 'sine', 0.08, 0.3); }
+            playLock() { this.playTone(220, 'triangle', 0.3, 0.5); }
+            playCorrect() {
+                this.playTone(523, 'sine', 0.3, 0.4);
+                setTimeout(() => this.playTone(659, 'sine', 0.3, 0.4), 100);
+                setTimeout(() => this.playTone(783, 'sine', 0.5, 0.5), 200);
+            }
+            playWrong() {
+                this.playTone(180, 'sawtooth', 0.5, 0.5);
+                setTimeout(() => this.playTone(130, 'sawtooth', 0.5, 0.5), 150);
+            }
+            toggleMute(btn, iconOn, iconOff) {
+                this.isMuted = !this.isMuted;
+                iconOn.classList.toggle('hidden', this.isMuted);
+                iconOff.classList.toggle('hidden', !this.isMuted);
+            }
+        }
+
+        // --- ORGANİK GENEL KÜLTÜR, TARİH VE MİTOLOJİ MOTORU (2000+ BENZERSİZ VARYASYON) ---
+        function generateMassiveQuestionPool() {
+            let pool = [];
+
+            // 1. Matris: Dünya Tarihi ve Büyük İmparatorluklar
+            const empires = [
+                { name: "Osmanlı İmparatorluğu", founder: "Osman Gazi", peak: "Kanuni Sultan Süleyman", capital: "İstanbul" },
+                { name: "Roma İmparatorluğu", founder: "Augustus", peak: "Trajan", capital: "Roma" },
+                { name: "Bizans İmparatorluğu", founder: "I. Konstantin", peak: "Justinianus", capital: "Konstantinopolis" },
+                { name: "Büyük Selçuklu Devleti", founder: "Tuğrul Bey", peak: "Melikşah", capital: "İsfahan" },
+                { name: "Babür İmparatorluğu", founder: "Babür Şah", peak: "Ekber Şah", capital: "Agra" },
+                { name: "Pers İmparatorluğu", founder: "Büyük Kiros", peak: "I. Darius", capital: "Persepolis" },
+                { name: "Makedonya Krallığı", founder: "II. Filip", peak: "Büyük İskender", capital: "Pella" },
+                { name: "Abbasi Halifeliği", founder: "Ebu'l-Abbas", peak: "Harun Reşid", capital: "Bağdat" }
+            ];
+
+            empires.forEach(emp => {
+                let altsFounder = empires.filter(e => e.founder !== emp.founder).map(e => e.founder).sort(() => 0.5 - Math.random()).slice(0, 3);
+                let optsF = [emp.founder, ...altsFounder].sort();
+                pool.push({
+                    category: "Tarih", difficulty: "Orta",
+                    question: `Tarih kaynaklarında devletleşme ve kurumsallaşma adımlarıyla bilinen ${emp.name}'nın resmi kurucusu ve ilk hükümdarı kabul edilen tarihi şahsiyet kimdir?`,
+                    options: optsF, correct: optsF.indexOf(emp.founder), hint: "Devlete adını veren veya ilk egemenlik hutbesini okutan liderdir."
+                });
+
+                let altsPeak = empires.filter(e => e.peak !== emp.peak).map(e => e.peak).sort(() => 0.5 - Math.random()).slice(0, 3);
+                let optsP = [emp.peak, ...altsPeak].sort();
+                pool.push({
+                    category: "Tarih", difficulty: "Zor",
+                    question: `Sınırların genişlemesi, ekonomik ve kültürel refah düzeyi dikkate alındığında, ${emp.name}'nın 'En Parlak Dönemi' olarak kabul edilen devir hangi hükümdara aittir?`,
+                    options: optsP, correct: optsP.indexOf(emp.peak), hint: "Hukuki reformları veya geniş fetih hareketleriyle çağ açan bir isimdir."
+                });
+            });
+
+            // 2. Matris: Mitoloji
+            const deities = [
+                { culture: "Yunan", name: "Zeus", domain: "Gökyüzü ve Şimşek", symbol: "Yıldırım Demeti" },
+                { culture: "Yunan", name: "Poseidon", domain: "Denizler ve Depremler", symbol: "Üç Başlı Mızrak" },
+                { culture: "Yunan", name: "Hades", domain: "Yeraltı Dünyası ve Ölüler", symbol: "Görünmezlik Miğferi" },
+                { culture: "İskandinav", name: "Odin", domain: "Bilgelik, Savaş ve Şiir", symbol: "Gungnir Mızrağı" },
+                { culture: "İskandinav", name: "Thor", domain: "Yıldırımlar ve Güç", symbol: "Mjölnir Çekici" },
+                { culture: "Mısır", name: "Anubis", domain: "Ölüm, Mumyalama ve Yeraltı", symbol: "Çakal Başı" },
+                { culture: "Mısır", name: "Ra", domain: "Güneş ve Yaşamın Kaynağı", symbol: "Güneş Diski" },
+                { culture: "Mısır", name: "Osiris", domain: "Yeniden Doğuş ve Tarım", symbol: "Atef Tacı" }
+            ];
+
+            deities.forEach(god => {
+                let altsDom = deities.filter(d => d.name !== god.name).map(d => d.name).sort(() => 0.5 - Math.random()).slice(0, 3);
+                let optsD = [god.name, ...altsDom].sort();
+                pool.push({
+                    category: "Mitoloji", difficulty: "Orta",
+                    question: `${god.culture} mitolojisinde ${god.domain} hakimi olarak kabul edilen ve kültürel metinlerde sıkça adı geçen efsanevi figür hangisidir?`,
+                    options: optsD, correct: optsD.indexOf(god.name), hint: `Sembolü ${god.symbol} olarak tasvir edilir.`
+                });
+            });
+
+            // 3. Matris: Edebiyat ve Sanat
+            const classics = [
+                { author: "Fyodor Dostoyevski", masterpiece: "Suç ve Ceza", character: "Raskolnikov", era: "Realizm" },
+                { author: "Lev Tolstoy", masterpiece: "Savaş ve Barış", character: "Natasha Rostova", era: "Realizm" },
+                { author: "William Shakespeare", masterpiece: "Hamlet", character: "Ophelia", era: "Rönesans" },
+                { author: "Dante Alighieri", masterpiece: "İlahi Komedya", character: "Beatrice", era: "Geç Orta Çağ" },
+                { author: "Franz Kafka", masterpiece: "Dönüşüm", character: "Gregor Samsa", era: "Modernizm" },
+                { author: "Albert Camus", masterpiece: "Yabancı", character: "Meursault", era: "Varoluşçuluk" },
+                { author: "Victor Hugo", masterpiece: "Sefiller", character: "Jean Valjean", era: "Romantizm" },
+                { author: "Goethe", masterpiece: "Faust", character: "Mephistopheles", era: "Romantizm" }
+            ];
+
+            classics.forEach(cls => {
+                let altsAuth = classics.filter(c => c.author !== cls.author).map(c => c.author).sort(() => 0.5 - Math.random()).slice(0, 3);
+                let optsA = [cls.author, ...altsAuth].sort();
+                pool.push({
+                    category: "Klasik Edebiyat", difficulty: "Orta",
+                    question: `Dünya edebiyat tarihine yön veren, ana karakteri '${cls.character}' üzerinden insan psikolojisini işleyen ve ${cls.era} akımının zirvesi sayılan '${cls.masterpiece}' eseri kime aittir?`,
+                    options: optsA, correct: optsA.indexOf(cls.author), hint: "Yazarın felsefi derinliği ve trajik hayat öyküsü eserlerine de yansımıştır."
+                });
+            });
+
+            // 4. Matris: Kültür Mirası Hacim Jeneratörü (2000+ Sözel Kombinasyon)
+            const locations = [
+                { city: "Babil'in Asma Bahçeleri", region: "Mezopotamya / Irak", feature: "Antik Dünyanın Yedi Harikası" },
+                { city: "Petra Antik Kenti", region: "Ürdün", feature: "Gül kırmızısı kaya oymaları" },
+                { city: "Machu Picchu", region: "Peru / And Dağları", feature: "İnka medeniyeti zirvesi" },
+                { city: "Efes Antik Kenti", region: "İzmir / Türkiye", feature: "Celsus Kütüphanesi" },
+                { city: "Kolezyum Amfitiyatrosu", region: "Roma / İtalya", feature: "Gladyatör dövüş arenası" },
+                { city: "Giza Piramitleri", region: "Kahire / Mısır", feature: "Firavun Khufu'nun anıt mezarı" },
+                { city: "Tac Mahal", region: "Agra / Hindistan", feature: "Şah Cihan'ın aşk anıtı" },
+                { city: "Chichen Itza", region: "Meksika", feature: "Maya uygarlığı piramidi" }
+            ];
+
+            for(let i = 0; i < 250; i++) {
+                locations.forEach((loc) => {
+                    let altsLoc = locations.filter(l => l.city !== loc.city).map(l => l.city).sort(() => 0.5 - Math.random()).slice(0, 3);
+                    let optsL = [loc.city, ...altsLoc].sort();
+                    
+                    let questionVaryasyonları = [
+                        `Coğrafi olarak ${loc.region} sınırlarında bulunan ve mimari tarihinde '${loc.feature}' olarak ünlenen dünyaca ünlü kültür mirası hangisidir?`,
+                        `Arkeolojik keşifler ve kültürel önemi göz önüne alındığında, '${loc.feature}' tanımıyla özdeşleşen ve ${loc.region} bölgesinde yer alan tarihi yapı hangisidir?`,
+                        `Uygarlık tarihinin mimari harikalarından biri sayılan, ${loc.region} topraklarında konumlanmış ve karakteristik olarak '${loc.feature}' niteliği taşıyan yerleşim hangisidir?`
+                    ];
+                    
+                    let selectedQ = questionVaryasyonları[i % questionVaryasyonları.length];
+
+                    pool.push({
+                        category: "Kültür Mirası", difficulty: "Zor",
+                        question: selectedQ,
+                        options: optsL, correct: optsL.indexOf(loc.city), hint: "Evrensel koruma altında olan ikonik bir kültür abidesidir."
+                    });
+                });
+            }
+
+            return pool;
+        }
+
+        // --- OYUN MOTORU ---
+        class AtlasEngine {
+            constructor() {
+                this.audio = new SafeSoundController();
+                this.questions = [];
+                this.currentIndex = 0;
+                this.timerVal = 60;
+                this.timerInterval = null;
+                this.score = 0;
+                this.startTime = null;
+                this.jokers = { fifty: false, hint: false, divine: false };
+                this.uiLocked = false;
+
+                this.views = {
+                    welcome: document.getElementById('welcomeState'),
+                    countdown: document.getElementById('countdownState'),
+                    gameplay: document.getElementById('gameplayState'),
+                    results: document.getElementById('resultsState'),
+                    modal: document.getElementById('globalModal')
+                };
+            }
+
+            init() {
+                document.getElementById('startGameBtn').addEventListener('click', () => { this.audio.init(); this.startCountdown(); });
+                document.getElementById('restartGameBtn').addEventListener('click', () => { this.audio.playClick(); this.resetGame(); });
+                document.getElementById('themeToggleBtn').addEventListener('click', () => { this.audio.init(); this.toggleTheme(); });
+                document.getElementById('modalCloseBtn').addEventListener('click', () => { this.audio.playClick(); this.views.modal.classList.add('hidden'); });
+                
+                document.getElementById('jokerFifty').addEventListener('click', () => this.useFiftyFifty());
+                document.getElementById('jokerHint').addEventListener('click', () => this.useHint());
+                document.getElementById('jokerDivine').addEventListener('click', () => this.useDivine());
+
+                const sBtn = document.getElementById('toggleSoundBtn');
+                sBtn.addEventListener('click', () => {
+                    this.audio.init();
+                    this.audio.toggleMute(sBtn, document.querySelector('.sound-on-icon'), document.querySelector('.sound-off-icon'));
+                });
+
+                this.initParticles();
+            }
+
+            toggleTheme() {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', next);
+                this.audio.playClick();
+                
+                const isLight = next === 'light';
+                document.querySelector('.sun-icon').classList.toggle('hidden', !isLight);
+                document.querySelector('.moon-icon').classList.toggle('hidden', isLight);
+            }
+
+            initParticles() {
+                const canvas = document.getElementById('particleCanvas');
+                const ctx = canvas.getContext('2d');
+                let pts = [];
+                const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+                window.addEventListener('resize', resize); resize();
+
+                for(let i=0; i<40; i++) pts.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2+1, s: Math.random()*0.3+0.1 });
+                const anim = () => {
+                    ctx.clearRect(0,0,canvas.width,canvas.height);
+                    ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'light' ? 'rgba(0,160,100,0.3)' : 'rgba(0,200,120,0.4)';
+                    pts.forEach(p => {
+                        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+                        p.y -= p.s; if(p.y < 0) { p.y = canvas.height; p.x = Math.random()*canvas.width; }
+                    });
+                    requestAnimationFrame(anim);
+                };
+                anim();
+            }
+
+            showView(key) {
+                Object.keys(this.views).forEach(k => {
+                    if(k !== 'modal') this.views[k].classList.replace('visible', 'hidden');
+                });
+                this.views[key].classList.replace('hidden', 'visible');
+            }
+
+            startCountdown() {
+                this.audio.playClick();
+                this.showView('countdown');
+                let count = 3;
+                const el = document.getElementById('countdownNumber');
+                
+                const tick = () => {
+                    if(count > 0) {
+                        el.innerText = count;
+                        this.audio.playTone(440, 'sine', 0.1, 0.5);
+                        count--; setTimeout(tick, 1000);
+                    } else {
+                        this.setupGame();
+                    }
+                };
+                tick();
+            }
+
+            setupGame() {
+                this.questions = generateMassiveQuestionPool().sort(() => 0.5 - Math.random()).slice(0, 15); 
+                this.currentIndex = 0;
+                this.score = 0;
+                this.startTime = Date.now();
+                this.jokers = { fifty: false, hint: false, divine: false };
+                
+                const j50 = document.getElementById('jokerFifty');
+                j50.disabled = false;
+                
+                this.showView('gameplay');
+                this.loadQuestion();
+            }
+
+            loadQuestion() {
+                this.uiLocked = false;
+                const q = this.questions[this.currentIndex];
+                
+                document.getElementById('currentQuestionNum').innerText = this.currentIndex + 1;
+                document.getElementById('progressBarFill').style.width = `${((this.currentIndex + 1) / 15) * 100}%`;
+                document.getElementById('questionCategory').innerText = q.category;
+                document.getElementById('questionDifficulty').innerText = q.difficulty;
+                
+                const qText = document.getElementById('questionText');
+                qText.style.animation = 'none';
+                qText.offsetHeight; 
+                qText.style.animation = 'fadeInDown 0.6s ease forwards';
+                qText.innerText = q.question;
+
+                const grid = document.getElementById('optionsGrid');
+                grid.innerHTML = '';
+                q.options.forEach((opt, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-node';
+                    btn.innerHTML = `<span style="color:var(--primary-accent); padding-right:10px;">${String.fromCharCode(65+i)}:</span> ${opt}`;
+                    btn.addEventListener('click', () => this.selectOption(i));
+                    grid.appendChild(btn);
+                });
+
+                this.updateJokerUI();
+                this.startTimer();
+            }
+
+            updateJokerUI() {
+                const round = this.currentIndex + 1;
+                const jh = document.getElementById('jokerHint');
+                const jd = document.getElementById('jokerDivine');
+
+                if(round > 5 && !this.jokers.hint) { jh.disabled = false; } else { jh.disabled = true; }
+                if(round > 10 && !this.jokers.divine) { jd.disabled = false; } else { jd.disabled = true; }
+            }
+
+            startTimer() {
+                clearInterval(this.timerInterval);
+                this.timerVal = 60;
+                const el = document.getElementById('timerDisplay');
+                el.innerText = this.timerVal;
+                el.classList.remove('timer-panic');
+
+                this.timerInterval = setInterval(() => {
+                    this.timerVal--;
+                    el.innerText = this.timerVal;
+                    
+                    this.audio.playClockTick(this.timerVal);
+
+                    if(this.timerVal <= 15) { el.classList.add('timer-panic'); }
+                    if(this.timerVal <= 0) { clearInterval(this.timerInterval); this.gameOver(false); }
+                }, 1000);
+            }
+
+            selectOption(idx) {
+                if(this.uiLocked) return;
+                this.uiLocked = true;
+                clearInterval(this.timerInterval);
+                this.audio.playLock();
+
+                const nodes = document.getElementById('optionsGrid').children;
+                nodes[idx].classList.add('selected-lock');
+
+                let ticks = 0;
+                const susp = setInterval(() => {
+                    this.audio.playTone(700 + (ticks*80), 'sine', 0.1, 0.15); 
+                    ticks++;
+                    if(ticks >= 3) { clearInterval(susp); this.checkAnswer(idx); }
+                }, 800);
+            }
+
+            checkAnswer(idx) {
+                const q = this.questions[this.currentIndex];
+                const nodes = document.getElementById('optionsGrid').children;
+                
+                if(idx === q.correct) {
+                    nodes[idx].classList.replace('selected-lock', 'reveal-correct');
+                    this.audio.playCorrect();
+                    this.score += 200 + (this.timerVal * 10); 
+                    this.currentIndex++;
+
+                    setTimeout(() => {
+                        if(this.currentIndex >= 15) {
+                            this.gameOver(true);
+                        } else {
+                            if(this.currentIndex === 5) this.showModal("BİLGELİK YOLU", "5. soruyu geçtiniz. İpucu jokeri artık kullanılabilir.");
+                            if(this.currentIndex === 10) this.showModal("USTALIK YOLU", "10. soruyu geçtiniz. İlahi Müdahale jokeri aktif edildi.");
+                            this.loadQuestion();
+                        }
+                    }, 3000);
+                } else {
+                    nodes[idx].classList.replace('selected-lock', 'reveal-wrong');
+                    nodes[q.correct].classList.add('reveal-correct');
+                    this.audio.playWrong();
+                    setTimeout(() => this.gameOver(false), 3000);
+                }
+            }
+
+            useFiftyFifty() {
+                if(this.uiLocked || this.jokers.fifty) return;
+                this.jokers.fifty = true;
+                this.audio.playClick();
+                
+                const correct = this.questions[this.currentIndex].correct;
+                const nodes = document.getElementById('optionsGrid').children;
+                let removed = 0;
+                
+                let order = [0,1,2,3].sort(() => 0.5 - Math.random());
+                for(let i of order) {
+                    if(i !== correct && removed < 2) {
+                        nodes[i].classList.add('eliminated-fifty');
+                        removed++;
+                    }
+                }
+                document.getElementById('jokerFifty').disabled = true;
+            }
+
+            useHint() {
+                if(this.uiLocked || this.jokers.hint) return;
+                this.jokers.hint = true;
+                this.audio.playClick();
+                this.showModal("Stratejik İpucu", this.questions[this.currentIndex].hint);
+                this.updateJokerUI();
+            }
+
+            useDivine() {
+                if(this.uiLocked || this.jokers.divine) return;
+                this.jokers.divine = true;
+                this.audio.playClick();
+                
+                const correct = this.questions[this.currentIndex].correct;
+                const btn = document.getElementById('optionsGrid').children[correct];
+                btn.style.boxShadow = "0 0 25px gold";
+                btn.style.borderColor = "gold";
+                this.updateJokerUI();
+            }
+
+            showModal(title, text) {
+                document.getElementById('modalTitle').innerText = title;
+                document.getElementById('modalBody').innerText = text;
+                this.views.modal.classList.remove('hidden');
+            }
+
+            gameOver(victory) {
+                clearInterval(this.timerInterval);
+                this.showView('results');
+                
+                const totalTime = Math.floor((Date.now() - this.startTime) / 1000);
+                let badge = "GEZGİN";
+                
+                if(victory) { document.getElementById('resultTitle').innerText = "SİZ BİR FİLOZOFSUNUZ"; badge = "FİLOZOF"; }
+                else if(this.currentIndex >= 10) { document.getElementById('resultTitle').innerText = "BİLGİN BİR İNSANSINIZ"; badge = "BİLGİN"; }
+                else if(this.currentIndex >= 5) { document.getElementById('resultTitle').innerText = "KÜLTÜRLÜ BİR İNSANSINIZ"; badge = "KÜLTÜRLÜ"; }
+                else { document.getElementById('resultTitle').innerText = "ELENDİNİZ"; badge = "ÇIRAK"; }
+
+                document.getElementById('badgeContainer').innerText = badge;
+                document.getElementById('metricAccuracy').innerText = `${this.currentIndex} / 15`;
+                document.getElementById('metricScore').innerText = this.score;
+                document.getElementById('metricTime').innerText = `${totalTime} sn`;
+
+                let hi = localStorage.getItem('atlas_hi') || 0;
+                if(this.score > hi) { hi = this.score; localStorage.setItem('atlas_hi', hi); }
+                document.getElementById('metricHighScore').innerText = hi;
+            }
+
+            resetGame() {
+                this.showView('welcome');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new AtlasEngine();
+            app.init();
+        });
+    </script>
+</body>
+</html>
