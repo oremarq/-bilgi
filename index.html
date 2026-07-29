@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kültür Atlası | Bilgi Yarışması</title>
+    <title>Kültür Atlası | Infinite Engine v2</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- PREMIUM TEMA VE GÖRSEL SİSTEM --- */
         :root {
             --font-primary: 'Manrope', sans-serif;
             --bg-gradient: radial-gradient(circle at center, #0a1f16 0%, #020504 100%);
@@ -51,7 +50,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background 0.8s ease, color 0.8s ease;
         }
 
         #particleCanvas {
@@ -81,46 +79,38 @@
             font-size: 2rem; font-weight: 800; letter-spacing: 4px;
             background: linear-gradient(45deg, var(--text-main), var(--primary-accent));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px var(--primary-glow);
         }
 
         .logo-subtitle { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--primary-accent); }
-        .header-controls { display: flex; align-items: center; gap: 15px; }
-
+        
         .audio-controls {
             display: flex; align-items: center; gap: 12px;
             background: var(--panel-bg); padding: 8px 16px;
             border-radius: 40px; border: 1px solid var(--panel-border);
-            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            backdrop-filter: var(--glass-blur);
         }
 
-        .volume-sliders { display: flex; flex-direction: column; gap: 6px; }
-        .vol-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
-        .vol-row input { width: 80px; height: 4px; accent-color: var(--primary-accent); cursor: pointer; }
+        .volume-sliders input { width: 80px; height: 4px; accent-color: var(--primary-accent); cursor: pointer; }
 
         .icon-btn {
             background: transparent; border: none; cursor: pointer;
             width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
             border-radius: 50%; transition: all 0.3s ease;
         }
-        .icon-btn:hover { background: var(--option-hover-bg); transform: scale(1.1); }
         .icon-btn svg { width: 22px; height: 22px; fill: var(--text-main); }
 
         .glass-panel {
             background: var(--panel-bg);
-            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            backdrop-filter: var(--glass-blur);
             border: 1px solid var(--panel-border); border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            border-left: 1px solid rgba(255,255,255,0.05);
         }
 
         .screen-card { text-align: center; padding: 50px 40px; max-width: 700px; margin: 0 auto; }
-        
         .state-view { display: none; opacity: 0; transform: translateY(20px); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .state-view.visible { display: block; opacity: 1; transform: translateY(0); }
 
-        .brand-title { font-size: 3rem; font-weight: 800; margin-bottom: 20px; letter-spacing: 5px; }
+        .brand-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 20px; letter-spacing: 3px; }
         .brand-desc { color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 40px; }
 
         .action-btn {
@@ -129,92 +119,62 @@
             letter-spacing: 3px; font-size: 1.1rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .glow-btn { background: var(--primary-accent); color: #000; box-shadow: 0 0 20px var(--primary-glow); }
-        .glow-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 30px var(--primary-glow); }
+        .glow-btn:hover { transform: translateY(-3px) scale(1.05); }
 
         .cinematic-counter {
             font-size: 10rem; font-weight: 800; text-align: center; color: var(--primary-accent);
             text-shadow: 0 0 50px var(--primary-glow);
-            animation: zoomPulse 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation: zoomPulse 1s infinite;
         }
-        @keyframes zoomPulse { 0% { transform: scale(0.5); opacity: 0; } 40% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+        @keyframes zoomPulse { 0% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
 
         .gameplay-hud { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 30px; }
         .progress-container { flex: 1; }
-        .progress-text { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px; display: block; letter-spacing: 1px;}
-        .progress-bar-wrapper { background: rgba(255, 255, 255, 0.05); height: 10px; border-radius: 5px; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-        .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #007744, var(--primary-accent)); transition: width 0.5s ease-out; box-shadow: 0 0 10px var(--primary-accent); }
+        .progress-bar-wrapper { background: rgba(255, 255, 255, 0.05); height: 10px; border-radius: 5px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #007744, var(--primary-accent)); transition: width 0.5s ease; }
 
         .timer-circle {
             width: 65px; height: 65px; border-radius: 50%; border: 4px solid var(--primary-accent);
             display: flex; justify-content: center; align-items: center; font-weight: 800; font-size: 1.5rem;
-            box-shadow: 0 0 15px var(--primary-glow), inset 0 0 10px var(--primary-glow);
-            text-shadow: 0 0 5px var(--primary-accent);
         }
-        .timer-panic { border-color: var(--wrong-color); color: var(--wrong-color); box-shadow: 0 0 20px var(--wrong-color); animation: panic 0.4s infinite alternate; }
+        .timer-panic { border-color: var(--wrong-color); color: var(--wrong-color); animation: panic 0.4s infinite alternate; }
+        @keyframes panic { from { transform: scale(1); } to { transform: scale(1.1); } }
 
-        .jokers-wrapper {
-            display: flex; align-items: center; background: rgba(0,0,0,0.3); 
-            padding: 6px 8px 6px 16px; border-radius: 40px; border: 1px solid var(--panel-border);
-        }
-        .jokers-title { font-size: 0.75rem; font-weight: 800; color: var(--primary-accent); letter-spacing: 2px; margin-right: 12px; }
-        .lifelines-container { display: flex; gap: 8px; }
         .lifeline-btn {
             background: var(--panel-bg); color: var(--text-main); border: 1px solid var(--option-border);
-            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: 700;
-            transition: all 0.3s ease;
+            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: 700; margin-left: 5px;
         }
-        .lifeline-btn:hover:not(:disabled) { background: var(--primary-accent); color: #000; box-shadow: 0 0 15px var(--primary-glow); transform: translateY(-2px); }
-        .lifeline-btn:disabled { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; background: rgba(0,0,0,0.5); }
+        .lifeline-btn:disabled { opacity: 0.2; cursor: not-allowed; }
 
-        .question-board { padding: 45px; min-height: 350px; display: flex; flex-direction: column; justify-content: center; }
+        .question-board { padding: 45px; min-height: 320px; display: flex; flex-direction: column; justify-content: center; }
         .question-metadata { display: flex; gap: 12px; margin-bottom: 20px; }
-        .badge { font-size: 0.75rem; text-transform: uppercase; font-weight: 800; padding: 5px 12px; border-radius: 12px; background: rgba(0, 200, 120, 0.15); border: 1px solid var(--primary-accent); color: var(--primary-accent); letter-spacing: 1px; }
+        .badge { font-size: 0.75rem; text-transform: uppercase; font-weight: 800; padding: 5px 12px; border-radius: 12px; background: rgba(0, 200, 120, 0.15); border: 1px solid var(--primary-accent); color: var(--primary-accent); }
         
-        .question-statement { 
-            font-size: 1.6rem; font-weight: 600; line-height: 1.6; margin-bottom: 35px;
-            animation: fadeInDown 0.6s ease forwards;
-        }
-        
+        .question-statement { font-size: 1.5rem; font-weight: 600; line-height: 1.6; margin-bottom: 35px; }
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 768px) { .options-grid { grid-template-columns: repeat(2, 1fr); } }
 
         .option-node {
             background: var(--option-bg); border: 2px solid var(--option-border); color: var(--text-main);
             padding: 18px 25px; border-radius: 15px; text-align: left; font-size: 1.1rem; font-weight: 600; cursor: pointer;
-            transition: all 0.3s ease; position: relative; overflow: hidden;
-            opacity: 0; animation: slideInUp 0.5s forwards;
+            transition: all 0.2s ease; position: relative;
         }
-        .option-node:nth-child(1) { animation-delay: 0.1s; }
-        .option-node:nth-child(2) { animation-delay: 0.2s; }
-        .option-node:nth-child(3) { animation-delay: 0.3s; }
-        .option-node:nth-child(4) { animation-delay: 0.4s; }
-
-        @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .option-node::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transition: 0.5s; }
-        .option-node:hover::before { left: 100%; }
-        .option-node:hover:not(.disabled) { border-color: var(--primary-accent); box-shadow: 0 0 20px var(--primary-glow); transform: scale(1.02); }
+        .option-node:hover:not(.disabled) { border-color: var(--primary-accent); background: var(--option-hover-bg); }
+        .option-node.selected-lock { background: rgba(0, 200, 120, 0.4); border-color: var(--primary-accent); }
         
-        .option-node.selected-lock { background: rgba(0, 200, 120, 0.4); border-color: var(--primary-accent); box-shadow: 0 0 25px var(--primary-glow); animation: pulseLock 1s infinite alternate; }
-        
-        .option-node.reveal-correct { background: rgba(0, 255, 136, 0.4) !important; border-color: var(--correct-color) !important; box-shadow: 0 0 30px rgba(0,255,136,0.6) !important; }
-        .option-node.reveal-wrong { background: rgba(255, 51, 102, 0.4) !important; border-color: var(--wrong-color) !important; box-shadow: 0 0 30px rgba(255,51,102,0.6) !important; }
-        .option-node.eliminated-fifty { opacity: 0.1; pointer-events: none; filter: grayscale(100%); }
+        .option-node.reveal-correct { background: rgba(0, 255, 136, 0.4) !important; border-color: var(--correct-color) !important; }
+        .option-node.reveal-wrong { background: rgba(255, 51, 102, 0.4) !important; border-color: var(--wrong-color) !important; }
+        .option-node.eliminated-fifty { opacity: 0.1; pointer-events: none; }
 
         .metrics-dashboard { margin: 25px 0; text-align: left; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 15px; }
-        .metrics-table { width: 100%; border-collapse: collapse; }
-        .metrics-table td { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 1.1rem; }
-        .metrics-table td:last-child { text-align: right; font-weight: 800; color: var(--primary-accent); font-size: 1.3rem; }
+        .metrics-table { width: 100%; }
+        .metrics-table td { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .metrics-table td:last-child { text-align: right; font-weight: 800; color: var(--primary-accent); }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 100; display: flex; justify-content: center; align-items: center; }
-        .modal-content { padding: 35px; max-width: 450px; width: 95%; text-align: center; border-radius: 25px; border-top: 2px solid var(--primary-accent); }
-        .modal-content h3 { color: var(--primary-accent); margin-bottom: 15px; font-size: 1.8rem; }
-        .modal-content p { color: var(--text-main); margin-bottom: 25px; font-size: 1.1rem; line-height: 1.6; }
+        .modal-content { padding: 35px; max-width: 450px; width: 95%; text-align: center; border-radius: 25px; }
 
-        .app-footer { text-align: center; padding-top: 20px; font-size: 0.85rem; color: var(--text-muted); letter-spacing: 1px; }
-        .premium-author { font-weight: 800; color: #fff; animation: neonPulse 2s infinite alternate; cursor: pointer; }
-        @keyframes neonPulse { 0% { text-shadow: 0 0 5px var(--primary-glow); } 100% { text-shadow: 0 0 15px var(--primary-accent); } }
+        .app-footer { text-align: center; padding-top: 20px; font-size: 0.85rem; color: var(--text-muted); }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -226,25 +186,15 @@
         <header class="app-header">
             <div>
                 <span class="logo-title">KÜLTÜR ATLASI</span>
-                <span class="logo-subtitle">Bilgi Yarışması</span>
+                <span class="logo-subtitle">Anti-Repetitive Engine</span>
             </div>
-            <div class="header-controls">
+            <div class="header-controls" style="display: flex; gap: 10px;">
                 <div class="audio-controls">
-                    <button id="toggleSoundBtn" class="icon-btn">
-                        <svg class="sound-on-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-                        <svg class="sound-off-icon hidden" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25z"/></svg>
-                    </button>
-                    <div class="volume-sliders">
-                        <div class="vol-row">
-                            <span title="Ses Efektleri">🔊</span>
-                            <input type="range" id="sfxVol" min="0" max="1" step="0.1" value="0.6">
-                        </div>
-                    </div>
+                    <button id="toggleSoundBtn" class="icon-btn">🔊</button>
+                    <input type="range" id="sfxVol" min="0" max="1" step="0.1" value="0.5">
                 </div>
-                <button id="themeToggleBtn" class="icon-btn" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
-                    <svg class="moon-icon" viewBox="0 0 24 24"><path d="M12.3 22h-.1c-5.5 0-10-4.5-10-10 0-4.8 3.5-8.9 8.3-9.7.7-.1 1.4.3 1.6 1.7-.1 1.4-.7 1.8-2.4 1.7z"/></svg>
-                    <svg class="sun-icon hidden" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/></svg>
-                </button>
+                <button id="themeToggleBtn" class="icon-btn" style="background: rgba(255,255,255,0.1);">🌓</button>
+                <button id="resetMemoryBtn" class="lifeline-btn" style="border-color: var(--wrong-color); color: var(--wrong-color);">Hafızayı Sıfırla</button>
             </div>
         </header>
 
@@ -252,8 +202,9 @@
             <!-- GİRİŞ EKRANI -->
             <section id="welcomeState" class="state-view screen-card glass-panel visible">
                 <h1 class="brand-title">KÜLTÜR ATLASI</h1>
-                <p class="brand-desc">Genel Kültür Bilgini Ölçmeye Var Mısın?</p>
+                <p class="brand-desc">Tarayıcı tabanlı kara liste algoritması aktif. Çözdüğünüz hiçbir soru veya spesifik özne, havuz bitene kadar bir daha karşınıza çıkmayacaktır.</p>
                 <button id="startGameBtn" class="action-btn glow-btn">YARIŞMAYA BAŞLA</button>
+                <div id="memoryStats" style="margin-top: 20px; font-size: 0.85rem; color: var(--text-muted);"></div>
             </section>
 
             <!-- GERİ SAYIM -->
@@ -265,19 +216,13 @@
             <section id="gameplayState" class="state-view hidden">
                 <div class="gameplay-hud">
                     <div class="progress-container">
-                        <span class="progress-text">Soru: <b id="currentQuestionNum">1</b>/15</span>
+                        <span class="progress-text" style="font-size: 0.9rem; color: var(--text-muted);">Soru: <b id="currentQuestionNum">1</b>/15</span>
                         <div class="progress-bar-wrapper"><div id="progressBarFill" class="progress-bar-fill"></div></div>
                     </div>
-                    
                     <div id="timerDisplay" class="timer-circle">60</div>
-                    
-                    <div class="jokers-wrapper">
-                        <span class="jokers-title">JOKERLER:</span>
-                        <div class="lifelines-container">
-                            <button id="jokerFifty" class="lifeline-btn">50:50</button>
-                            <button id="jokerHint" class="lifeline-btn" disabled>İpucu Jokeri</button>
-                            <button id="jokerDivine" class="lifeline-btn" disabled>Tanrısal Joker</button>
-                        </div>
+                    <div class="lifelines-container">
+                        <button id="jokerFifty" class="lifeline-btn">50:50</button>
+                        <button id="jokerHint" class="lifeline-btn" disabled>İpucu</button>
                     </div>
                 </div>
 
@@ -293,248 +238,139 @@
 
             <!-- SONUÇ EKRANI -->
             <section id="resultsState" class="state-view screen-card glass-panel hidden">
-                <h2 id="resultTitle" class="brand-title">YARIŞMA BİTTİ</h2>
-                <div id="badgeContainer" style="margin: 10px 0 25px 0; font-weight: 800; font-size: 1.8rem; color: #00c878; letter-spacing: 2px;"></div>
+                <h2 id="resultTitle" class="brand-title">OYUN BİTTİ</h2>
                 <div class="metrics-dashboard">
                     <table class="metrics-table">
                         <tbody>
                             <tr><td>Doğru Cevap Sayısı</td><td id="metricAccuracy">0/15</td></tr>
                             <tr><td>Toplam Puan</td><td id="metricScore">0</td></tr>
-                            <tr><td>Geçen Süre</td><td id="metricTime">0 sn</td></tr>
-                            <tr><td>En Yüksek Skor</td><td id="metricHighScore">0</td></tr>
+                            <tr><td>Hafızadaki Yasaklı Özne Sayısı</td><td id="metricMemoryCount">0</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <button id="restartGameBtn" class="action-btn glow-btn" style="margin-top: 15px;">TEKRAR YARIŞ</button>
+                <button id="restartGameBtn" class="action-btn glow-btn">YENİ TUR BAŞLAT</button>
             </section>
         </main>
 
         <footer class="app-footer">
-            <span>Made with precision by <span class="premium-author">BERAT</span></span>
+            <span>Dynamic Anti-Clump System v2.6</span>
         </footer>
     </div>
 
     <!-- MODAL -->
     <div id="globalModal" class="modal-overlay hidden">
         <div class="modal-content glass-panel">
-            <h3 id="modalTitle">Kilometre Taşı!</h3>
-            <p id="modalBody">İçerik</p>
-            <button id="modalCloseBtn" class="action-btn glow-btn" style="padding: 12px 30px; font-size: 0.9rem;">ANLADIM</button>
+            <h3 id="modalTitle" style="color: var(--primary-accent); margin-bottom: 15px;">İpucu</h3>
+            <p id="modalBody" style="margin-bottom: 25px; line-height: 1.6;"></p>
+            <button id="modalCloseBtn" class="action-btn glow-btn" style="padding: 10px 30px; font-size: 0.9rem;">KAPAT</button>
         </div>
     </div>
 
     <script>
-        // --- SES MOTORU (SADECE TİK-TAK VE ETKİLEŞİM EFEKTLERİ) ---
-        class SafeSoundController {
+        // --- TICK-TOCK SES EFEKTLERİ MOTORU ---
+        class AudioEngine {
             constructor() {
                 this.ctx = null;
-                this.isMuted = false;
-                this.sfxVol = 0.6;
+                this.muted = false;
+                this.vol = 0.5;
             }
             init() {
-                if (this.ctx) {
-                    if (this.ctx.state === 'suspended') this.ctx.resume();
-                    return;
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
                 }
-                try {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    if (AudioContext) {
-                        this.ctx = new AudioContext();
-                        this.setupVolumeListeners();
-                    }
-                } catch (e) { console.log("Ses motoru başlatılamadı."); }
             }
-            setupVolumeListeners() {
-                document.getElementById('sfxVol').addEventListener('input', (e) => {
-                    this.sfxVol = parseFloat(e.target.value);
-                });
+            playTone(freq, type, dur, volume) {
+                if (!this.ctx || this.muted) return;
+                let osc = this.ctx.createOscillator();
+                let gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                gain.gain.setValueAtTime(volume * this.vol, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
+                osc.connect(gain); gain.connect(this.ctx.destination);
+                osc.start(); osc.stop(this.ctx.currentTime + dur);
             }
-            playTone(freq, type, dur, vol, volMultiplier = this.sfxVol) {
-                if (!this.ctx || this.isMuted) return;
-                try {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = type;
-                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-                    gain.gain.setValueAtTime(vol * volMultiplier, this.ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
-                    osc.connect(gain); gain.connect(this.ctx.destination);
-                    osc.start(); osc.stop(this.ctx.currentTime + dur);
-                } catch(e){}
-            }
-            playClockTick(secondsLeft) {
-                if (!this.ctx || this.isMuted) return;
-                const freq = (secondsLeft % 2 === 0) ? 850 : 650;
-                const vol = secondsLeft <= 15 ? 0.25 : 0.12;
-                this.playTone(freq, 'sine', 0.04, vol);
-            }
-            
-            playClick() { this.playTone(600, 'sine', 0.08, 0.3); }
-            playLock() { this.playTone(220, 'triangle', 0.3, 0.5); }
-            playCorrect() {
-                this.playTone(523, 'sine', 0.3, 0.4);
-                setTimeout(() => this.playTone(659, 'sine', 0.3, 0.4), 100);
-                setTimeout(() => this.playTone(783, 'sine', 0.5, 0.5), 200);
-            }
-            playWrong() {
-                this.playTone(180, 'sawtooth', 0.5, 0.5);
-                setTimeout(() => this.playTone(130, 'sawtooth', 0.5, 0.5), 150);
-            }
-            toggleMute(btn, iconOn, iconOff) {
-                this.isMuted = !this.isMuted;
-                iconOn.classList.toggle('hidden', this.isMuted);
-                iconOff.classList.toggle('hidden', !this.isMuted);
-            }
+            tick(panic) { this.playTone(panic ? 900 : 600, 'sine', 0.05, 0.15); }
+            correct() { this.playTone(523, 'sine', 0.15, 0.3); setTimeout(() => this.playTone(659, 'sine', 0.2, 0.3), 100); }
+            wrong() { this.playTone(150, 'sawtooth', 0.4, 0.4); }
+            lock() { this.playTone(280, 'triangle', 0.15, 0.3); }
         }
 
-        // --- BİLİMSEL VE ADİL HASSAS KARIŞTIRMA ALGORİTMASI (FISHER-YATES) ---
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
+        // --- TAMAMEN BENZERSİZ VE DEVASA EŞSİZ ÖZNE VERİ TABANI ---
+        const MASTER_DATA = {
+            "Tarih": [
+                { id: "t1", target: "Hammurabi Kanunları", event: "Babil'de ilk yazılı anayasal kuralların taş sütunlara kazınması", region: "Mezopotamya", hint: "Kısasa kısas ilkesiyle bilinen en eski ceza hukuku derlemesidir." },
+                { id: "t2", target: "Magna Carta", event: "Kral John'un yetkilerini sınırlayarak hukukun üstünlüğünü başlatması", region: "İngiltere", hint: "Avrupa'da mutlak monarşiyi ilk kez baltalayan özgürlük fermanıdır." },
+                { id: "t3", target: "Puvatya Savaşı", event: "Endülüs Emevi ordusunun Charles Martel tarafından durdurulması", region: "Fransa", hint: "İslam ordularının Batı Avrupa'daki ilerleyişini bıçak gibi kesen kritik muharebedir." },
+                { id: "t4", target: "Meiji Restorasyonu", event: "Samuray devrinin kapanıp ülkenin hızla batılılaşma sürecine girmesi", region: "Japonya", hint: "Şogunluk yönetimini devirip imparatoru yeniden mutlak otorite yapan reform zinciridir." },
+                { id: "t5", target: "Kadeş Antlaşması", event: "II. Ramses ile III. Hattuşili arasında imzalanan tarihin ilk barış metni", region: "Suriye Sınırı", hint: "Hitit ve Mısır imparatorluklarının savaşına son veren çivi yazılı tablet." },
+                { id: "t6", target: "Pax Romana", event: "Augustus döneminde başlayan ve 200 yıl süren iç istikrar çağı", region: "Akdeniz Havzası", hint: "Roma İmparatorluğu'nun askeri genişlemeyi sabitleyip kültürel zirveye ulaştığı altın dönem." },
+                { id: "t7", target: "Miryokefalon Savaşı", event: "Anadolu'nun Türk yurdu olduğunun kesinleştiği Bizans mağlubiyeti", region: "Denizli Civarı", hint: "II. Kılıç Arslan'ın Bizans pusu stratejisini çökerterek taarruz gücünü yok ettiği savaş." }
+            ],
+            "Mitoloji": [
+                { id: "m1", target: "Fenrir", event: "Ragnarok'ta Odin'i yutacağı kehanet edilen zincirli dev kurt", region: "İskandinav Diyarı", hint: "Tanrı Tyr'ın elini koparan, Loki'nin canavar çocuklarının en büyüğüdür." },
+                { id: "m2", target: "Anubis", event: "Ölülerin kalbini Ma'at'ın doğruluk tüyü ile tartma ritüeli", region: "Mısır Yeraltı Dünyası", hint: "Mumyalama sanatının mucidi sayılan, çakal kafalı rehber tanrıdır." },
+                { id: "m3", target: "Prometheus", event: "Olympos'tan ateşi çalarak insanlığa medeniyeti hediye etmesi", region: "Kafkas Dağları", hint: "Zeus tarafından karaciğeri her gün bir kartala yedirilmekle cezalandırılan Titan." },
+                { id: "m4", target: "Gilgameş", event: "Dostu Enkidu'nun ölümü üzerine ölümsüzlük bitkisinin peşine düşülmesi", region: "Uruk Krallığı", hint: "Tarihin ilk yazılı epik destanına konu olan yarı tanrı Sümer hükümdarı." },
+                { id: "m5", target: "Medusa", event: "Gözlerine bakanı taşa çeviren yılan saçlı ölümcül Gorgon kardeş", region: "Antik Yunan", hint: "Perseus tarafından aynalı kalkan yardımıyla kafası kesilerek öldürülen lanetli kadın." },
+                { id: "m6", target: "Quetzalcoatl", event: "İnsanlığa mısırı ve takvimi getiren tüylü yılan tanrı", region: "Aztek / Maya", hint: "Gök ile yeri birbirine bağlayan, rüzgarın ve bilginin koruyucusu olan Mesoamerika ilahı." },
+                { id: "m7", target: "Enki", event: "İnsanlığı tufandan korumak için kamış duvara gizlice fısıldayan su tanrısı", region: "Sümer Babil", hint: "Efsanelerde bilgeliğin, zanaatın ve yaratılışın efendisi olan tatlı su tanrısı." }
+            ],
+            "Edebiyat": [
+                { id: "e1", target: "Dönüşüm", event: "Gregor Samsa'nın bir sabah uyandığında devasa bir böceğe evrilmesi", region: "Modernist Edebiyat", hint: "Bürokrasinin ve aile yabancılaşmasının doruk noktasını işleyen Franz Kafka eseridir." },
+                { id: "e2", target: "İlahi Komedya", event: "Şairin Vergilius rehberliğinde Cehennem katlarına iniş yolculuğu", region: "İtalyan Rönesansı", hint: "Dante Alighieri'nin sevgilisi Beatrice'ye ulaşmak için kurguladığı üç parçalı epik şiir." },
+                { id: "e3", target: "1984", event: "Winston Smith'in Düşünce Polisi ve Büyük Birader'e karşı isyanı", region: "Distopya Dünyası", hint: "Dilin ve geçmişin manipülasyonunu 'Newspeak' kavramıyla açıklayan George Orwell şaheseri." },
+                { id: "e4", target: "Kürk Mantolu Madonna", event: "Raif Efendi'nin Almanya'daki bir sergide Maria Puder portresine aşık olması", region: "Türk Klasikleri", hint: "İç dünyası zengin ama dışarıya karşı tamamen sessiz bir adamın trajedisini yazan Sabahattin Ali eseri." },
+                { id: "e5", target: "Faust", event: "Bilim insanının sınırsız bilgi uğruna ruhunu Mephistopheles'e satması", region: "Alman Romantizmi", hint: "Goethe'nin yazımı neredeyse tüm ömrünü alan, insan trajedisini özetleyen başyapıtı." },
+                { id: "e6", target: "Yüzyıllık Yalnızlık", event: "Buendia ailesinin yedi nesillik büyülü gerçekçi kader döngüsü", region: "Macondo Kasabası", hint: "Gabriel Garcia Marquez'e Nobel getiren, zamanın doğrusal değil dairesel aktığı roman." },
+                { id: "e7", target: "Karamazov Kardeşler", event: "Baba Fyodor'un cinayeti üzerinden inanç, ahlak ve şehvet çatışmaları", region: "Rus Realizmi", hint: "Dostoyevski'nin ölmeden önce yazdığı, insan ruhunun derinliklerini deştiği son büyük eseri." }
+            ],
+            "Coğrafya": [
+                { id: "c1", target: "Mariana Çukuru", event: "Challenger Derinliği olarak adlandırılan gezegenin en dip noktası", region: "Büyük Okyanus", hint: "Tektonik levhaların birbirinin altına girmesiyle oluşan 11 kilometrelik derinlik." },
+                { id: "c2", target: "Atacama Çölü", event: "Yüzyıllar boyunca tek damla yağmur almayan yeryüzünün en kurak yeri", region: "Şili Ant Dağları", hint: "NASA'nın Mars yüzeyi testlerini gerçekleştirdiği, nem oranı sıfıra yakın yüksek çöl." },
+                { id: "c3", target: "Baykal Gölü", event: "Dünya tatlı su rezervinin yüzde 20'sini tek başına barındıran havza", region: "Sibirya / Rusya", hint: "Hem yeryüzünün en derin gölü hem de en eski açık su ekosistemidir." },
+                { id: "c4", target: "Angel Çağlayanı", event: "Suyun kesintisiz olarak yaklaşık 979 metreden aşağı düştüğü uçurum", region: "Venezuela Auyan-Tepui", hint: "Dünyanın en yüksek kesintisiz şelalesi unvanına sahip coğrafi doğa harikası." },
+                { id: "c5", target: "Lut Gölü", event: "Yoğun tuz oranı yüzünden canlı yaşamına izin vermeyen en alçak göl seviyesi", region: "Ürdün - İsrail Sınırı", hint: "Deniz seviyesinin yaklaşık 430 metre altında bulunan, batmama özelliğiyle bilinen tektonik havza." },
+                { id: "c6", target: "Krakatoa Yanardağı", event: "1883'te patladığında sesi 4800 km öteden duyulan ve iklimi değiştiren dağ", region: "Endonezya Sunda Boğazı", hint: "Tarihin kaydettiği en şiddetli patlamalardan birine sahne olan aktif volkanik ada." },
+                { id: "c7", target: "Büyük Set Resifi", event: "Uzaydan çıplak gözle görülebilen dünyanın en büyük canlı organizma yapısı", region: "Mercan Denizi / Avustralya", hint: "Binlerce bireysel resif ve adadan oluşan devasa su altı ekosistemi." }
+            ],
+            "Bilim": [
+                { id: "b1", target: "Olay Ufku", event: "Işığın bile kaçamadığı, kütleçekiminin sonsuz olduğu kara delik sınırı", region: "Genel Görelilik", hint: "Bu sınır geçildikten sonra evrenin bilinen fizik kuralları tamamen işlevsiz kalır." },
+                { id: "b2", target: "Schrödinger'in Kedisi", event: "Kuantum süperpozisyon durumunu açıklamak için tasarlanan paradoks", region: "Kuantum Mekaniği", hint: "Bir gözlem yapılana kadar radyoaktif atomun hem bozunmuş hem bozunmamış olma olasılığı." },
+                { id: "b3", target: "CRISPR-Cas9", event: "Bakteri savunma mekanizmasından uyarlanan hassas gen düzenleme teknolojisi", region: "Biyoteknoloji", hint: "DNA dizilimlerini adeta bir kelime işlemci gibi kesip değiştirmeye yarayan moleküler makas." },
+                { id: "b4", target: "Higgs Bozonu", event: "Parçacıklara kütlelerini kazandıran enerji alanının taşıyıcı kuantumu", region: "CERN / Standart Model", hint: "Bilim dünyasında uzun süre arandıktan sonra 2012'de keşfedilen 'Tanrı Parçacığı'." },
+                { id: "b5", target: "Termodinamiğin İkinci Kanunu", event: "Kapalı sistemlerde entropinin (düzensizliğin) sürekli artma eğilimi", region: "Isı ve Fizik", hint: "Zamanın yönünü belirleyen, ısının soğuktan sıcağa kendiliğinden akamayacağını söyleyen yasa." },
+                { id: "b6", target: "Fotoelektrik Etki", event: "Işığın metal yüzeylerden elektron sökmesi olayı ve kuantumlu doğası", region: "Modern Fizik", hint: "Albert Einstein'a İzafiyet teorisinden değil, bu olayı açıklamasından dolayı Nobel verilmiştir." },
+                { id: "b7", target: "Hubble Kanunu", event: "Galaksilerin bizden uzaklaşma hızlarının mesafeleriyle doğru orantılı olması", region: "Kozmoloji", hint: "Evrenin durağan olmadığını, sürekli genişlediğini kanıtlayan temel astrofizik verisi." }
+            ],
+            "Sanat": [
+                { id: "s1", target: "Guernica", event: "Nazi uçaklarının bombaladığı kasabanın acısını yansıtan monokrom dev tablo", region: "Kübizm Akımı", hint: "Pablo Picasso'nun savaşın dehşetini parçalanmış boğa ve at figürleriyle anlattığı anıtsal yapıt." },
+                { id: "s2", target: "Belleğin Azmi", event: "Katalan sahilinde eriyen ve cep saatleriyle zamanı esneten tablo", region: "Sürrealizm", hint: "Salvador Dali'nin rüya mantığı ve bilinçaltı analiziyle kurguladığı en ünlü eseridir." },
+                { id: "s3", target: "Müzik Sanatı", event: "Ressamın atölyesinde arkası dönük modeli ve klarnet çalan kadını çizmesi", region: "Barok Dönemi", hint: "Işığın ustası Johannes Vermeer'in perspektif dehasını sergilediği gizemli tablosu." },
+                { id: "s4", target: "Düşünen Adam", event: "Cehennem Kapısı projesinin bir parçası olarak tasarlanan bronz döküm figür", region: "Modern Heykel", hint: "Auguste Rodin'in derin bir felsefi tefekkür halindeki insan anatomisini işlediği kült yapıt." },
+                { id: "s5", target: "Yıldızlı Gece", event: "Akıl hastanesi penceresinden görülen gökyüzünün girdap şeklinde boyanması", region: "Post-Empresyonizm", hint: "Vincent van Gogh'un intiharından kısa süre önce sarı ve mavi zıtlığıyla ürettiği şaheser." },
+                { id: "s6", target: "Gece Nöbeti", event: "Yüzbaşı Banninck Cocq ve müfreze üyelerinin dinamik kompozisyonu", region: "Hollanda Altın Çağı", hint: "Rembrandt'ın gölge-ışık (chiaroscuro) tekniğinde devrim yarattığı devasa boyutlu grup portresi." },
+                { id: "s7", target: "Atina Okulu", event: "Platon ve Aristoteles'in merkezde felsefi tartışma yürüttüğü fresk yapısı", region: "Vatikan Sarayı", hint: "Raffaello Sanzio'nun Antik Çağ filozoflarını aynı çatı altında resmettiği Rönesans zirvesi." }
+            ]
+        };
 
-        // --- TAMAMEN YENİLENMİŞ, MATRİS TABANLI DENGELİ SORU MOTORU ---
-        function generateMassiveQuestionPool() {
-            let pool = {
-                "Tarih": [], "Mitoloji": [], "Edebiyat": [], "Coğrafya": [], "Bilim": [], "Sanat": []
-            };
+        const TEMPLATES = [
+            "Evrensel bilgi arşivlerinde #REGION koordinatlarında incelenen ve yapısal olarak '#EVENT' devrimi ile doğrudan özdeşleşen temel başlık hangisidir?",
+            "Akademik araştırmalarda kritik bir dönüm noktası kabul edilen; #REGION sınırlarında ortaya çıkıp doğrudan '#EVENT' olgusunu tetikleyen kavram veya eser hangisidir?",
+            "Kültürel literatürde benzersiz bir konuma sahip olan, odak noktasına '#EVENT' durumunu alan ve çıkış ekosistemi #REGION olan şaheser veya fenomen hangisidir?"
+        ];
 
-            const dataBank = {
-                "Tarih": [
-                    { target: "Napoleon Bonaparte", event: "Waterloo Savaşı", region: "Fransa", hint: "Avrupa haritasını sarsan, Elbe adasından kaçıp son kez tahta çıkan imparatordur." },
-                    { target: "Jül Sezar", event: "Rubicon Nehri'ni geçmesi", region: "Roma Cumhuriyeti", hint: "'Zarlar atıldı' diyerek iç savaşı başlatan diktatör devlet adamıdır." },
-                    { target: "Fatih Sultan Mehmet", event: "İstanbul'un Fethi", region: "Osmanlı İmparatorluğu", hint: "Gemi karadan yürütme dehasıyla Bizans surlarını yıkan genç padişahtır." },
-                    { target: "Mustafa Kemal Atatürk", event: "Büyük Taarruz", region: "Türkiye Cumhuriyeti", hint: "Kurtuluş Savaşı'nı 'Ordular, ilk hedefiniz Akdeniz'dir, ileri!' emriyle taçlandıran kurucudur." },
-                    { target: "Cengiz Han", event: "Moğol İmparatorluğu'nun kuruluşu", region: "Karakurum / Moğolistan", hint: "Tarihin bitişik sınırlara sahip en büyük imparatorluğunu kuran Bozkır kağanıdır." },
-                    { target: "Büyük İskender", event: "Gaugamela Savaşı", region: "Makedonya Krallığı", hint: "Gordiyon düğümünü kesen, Pers İmparatorluğu'nu tarihten silen efsanevi liderdir." },
-                    { target: "Abraham Lincoln", event: "Gettysburg Konuşması", region: "Amerika Birleşik Devletleri", hint: "İç savaşı bitirip köleliği resmi olarak kaldıran suikast kurbanı başkandır." },
-                    { target: "Kral John", event: "Magna Carta'nın imzalanması", region: "İngiltere Krallığı", hint: "Kendi yetkilerini kısıtlayarak anayasal düzene giden ilk adımı atan isteksiz hükümdardır." }
-                ],
-                "Mitoloji": [
-                    { target: "Zeus", event: "Olympos Dağı hakimiyeti", region: "Yunan Mitolojisi", hint: "Kardeşlerini Titanların karnından kurtaran, şimşeklerin efendisi baş tanrıdır." },
-                    { target: "Odin", event: "Valhalla Sarayı liderliği", region: "İskandinav Mitolojisi", hint: "Kuzey mitolojisinde bilgelik uğruna gözünü feda eden Kuzgunların efendisidir." },
-                    { target: "Anubis", event: "Duat Kapısı / Kalp Tartma", region: "Mısır Mitolojisi", hint: "Ölüleri mumyalayan ve adalet terazisinde kalpleri doğruluk tüyüyle tartan çakal başlı tanrıdır." },
-                    { target: "Amaterasu", event: "Gök Mağarası efsanesi", region: "Japon Mitolojisi", hint: "İmparatorluk soyunun kurucusu kabul edilen, dünyayı aydınlatan Güneş tanrıçasıdır." },
-                    { target: "Umay Ana", event: "Doğum ve Bereket koruyuculuğu", region: "Türk Mitolojisi", hint: "Çocukları ve lohusaları kanatlarıyla koruyan en eski Türk mitolojik varlığıdır." },
-                    { target: "Gilgameş", event: "Uruk surları / Ölümsüzlük arayışı", region: "Sümer Mitolojisi", hint: "Yarı tanrı yarı insan olan, dostu Enkidu'nun ölümüyle ebedi yaşamın peşine düşen kraldır." },
-                    { target: "Loki", event: "Ragnarok kıyameti fitili", region: "İskandinav Mitolojisi", hint: "Şekil değiştirebilen, kurnazlığı ve ihanetleriyle bilinen fesatlık tanrısıdır." },
-                    { target: "Athena", event: "Zeytin ağacı hediyesi / Akropolis", region: "Yunan Mitolojisi", hint: "Zeus'un kafasından zırhıyla doğan, stratejik savaşın ve felsefi bilgeliğin tanrıçasıdır." }
-                ],
-                "Edebiyat": [
-                    { target: "Fyodor Dostoyevski", event: "Suç ve Ceza", region: "Raskolnikov", hint: "İnsanın vicdani azaplarını tefeci kadını öldüren bir öğrenci üzerinden anlatan realist yazardır." },
-                    { target: "Franz Kafka", event: "Dönüşüm", region: "Gregor Samsa", hint: "Sabah uyandığında kendisini devasa bir böceğe dönüşmüş bulan karakterin yaratıcısıdır." },
-                    { target: "George Orwell", event: "1984", region: "Winston Smith", hint: "Büyük Birader ve düşünce polisi kavramlarını dünyaya kazandıran distopik başyapıtın yazardır." },
-                    { target: "Sabahattin Ali", event: "Kürk Mantolu Madonna", region: "Raif Efendi", hint: "Almanya'da bir tablodaki kadına aşık olan içine kapanık bir memurun melankolisini işleyen Türk yazardır." },
-                    { target: "William Shakespeare", event: "Hamlet", region: "Prens Hamlet", hint: "'Olmak ya da olmamak' tiradı ile intikam ile delilik arasında kalan Danimarka Prensini yazan yazardır." },
-                    { target: "Dante Alighieri", event: "İlahi Komedya", region: "Beatrice", hint: "Cehennem, Araf ve Cennet katlarını şair Vergilius rehberliğinde gezen İtalyan ozandır." },
-                    { target: "Albert Camus", event: "Yabancı", region: "Meursault", hint: "Annesinin ölümüne bile kayıtsız kalan absürdizm akımının en ünlü karakterini yaratan düşünürdür." },
-                    { target: "Cervantes", event: "Don Kişot", region: "Sancho Panza", hint: "Yel değirmenlerine karşı savaşan, şövalyelik hikayeleriyle aklını yitirmiş yaşlı adamı yazan ilk modern romancıdır." }
-                ],
-                "Coğrafya": [
-                    { target: "Everest Zirvesi", event: "Himalaya Sıradağları", region: "Nepal / Tibet", hint: "Yeryüzünün deniz seviyesinden ölçülen en yüksek noktası unvanına sahip devasa coğrafi yapıdır." },
-                    { target: "Mariana Çukuru", event: "Challenger Derinliği", region: "Büyük Okyanus", hint: "Okyanus tabanında yer alan, bilinen en derin tektonik çöküntü alanıdır." },
-                    { target: "Nil Nehri", event: "Akdeniz'e dökülen delta", region: "Afrika Kıtası", hint: "Antik Mısır medeniyetine hayat veren, dünyanın en uzun nehir sistemlerinden biridir." },
-                    { target: "Amazon Havzası", event: "Biyoçeşitlilik merkezi", region: "Güney Amerika", hint: "Dünya oksijen üretiminin büyük bir kısmını sağlayan devasa yağmur ormanları alanıdır." },
-                    { target: "Sahra Çölü", event: "Kuzey Afrika düzlükleri", region: "Kuzey Afrika", hint: "Dünyanın en büyük kutup dışı, aşırı sıcak ve kurak kum çölü bölgesidir." },
-                    { target: "Grönland Adası", event: "Buz örtüsü kütlesi", region: "Kuzey Atlas Okyanusu", hint: "Kıta özelliği taşımayan, Danimarka'ya bağlı yeryüzünün en büyük adasıdır." },
-                    { target: "Baykal Gölü", event: "Sibirya rift vadisi", region: "Rusya / Sibirya", hint: "Dünyanın en derin ve en eski tatlı su kaynağı olarak bilinen göldür." },
-                    { target: "Antarktika", event: "Güney Kutup Noktası", region: "Güney Kutbu", hint: "Üzerinde yerleşik insan popülasyonu olmayan, dünyanın en soğuk ve en rüzgarlı kıtasıdır." }
-                ],
-                "Bilim": [
-                    { target: "Albert Einstein", event: "Görelilik (İzafiyet) Teorisi", region: "Fizik Anabilim Dalı", hint: "Uzay ve zamanın mutlak olmadığını, kütleçekiminin uzay-zaman bükülmesi olduğunu kanıtlayan bilim insanıdır." },
-                    { target: "Isaac Newton", event: "Evrensel Kütleçekim Kanunu", region: "Klasik Mekanik", hint: "Başına düşen elma efsanesiyle bilinen, hareket yasalarını formüle eden dahi bilim insanıdır." },
-                    { target: "Marie Curie", event: "Radyoaktivite Keşfi", region: "Polonyum ve Radyum", hint: "İki farklı bilim dalında Nobel ödülü alan, laboratuvar çalışmaları uğruna hayatını kaybeden kadındır." },
-                    { target: "Dmitri Mendeleev", event: "Periyodik Cetvel Sistemi", region: "Kimya Anabilim Dalı", hint: "Elementleri atom kütlelerine göre sıralayan ve henüz keşfedilmemiş elementlerin yerini boş bırakan bilim insanıdır." },
-                    { target: "Charles Darwin", event: "Doğal Seçilim yoluyla Evrim", region: "Türlerin Kökeni eseri", hint: "Galapagos Adaları'ndaki gözlemleriyle canlıların adaptasyon mekanizmalarını açıklayan biyologdur." },
-                    { target: "Alan Turing", event: "Enigma Şifre Kırıcı Makine", region: "Yapay Zeka / Bilgisayar", hint: "İkinci Dünya Savaşı'nın seyrini değiştiren, bilgisayar biliminin kurumsal babası sayılan dahi matematikçidir." },
-                    { target: "Nikola Tesla", event: "Alternatif Akım (AC) Sistemi", region: "Elektrik Mühendisliği", hint: "Edison ile akım savaşlarına giren, kablosuz enerji aktarımı üzerine ömrünü harcayan mucittir." },
-                    { target: "Galileo Galilei", event: "Heliosantrizm (Güneş Merkezli Evren)", region: "Gökbilim / Astronomi", hint: "Engizisyon mahkemesinde 'Dünya yine de dönüyor' dediği rivayet edilen teleskop mucididir." }
-                ],
-                "Sanat": [
-                    { target: "Leonardo da Vinci", event: "Mona Lisa", region: "Rönesans Dönemi", hint: "Sfumato tekniğiyle yapılmış, gizemli gülümseyişiyle ünlenen tablonun İtalyan polimat sanatçısıdır." },
-                    { target: "Vincent van Gogh", event: "Yıldızlı Gece", region: "Post-Empresyonizm", hint: "Akıl hastanesi penceresinden gördüğü gökyüzünü dönen fırça darbeleriyle tuvale aktaran ressamdır." },
-                    { target: "Pablo Picasso", event: "Guernica", region: "Kübizm Akımı", hint: "İspanya İç Savaşı'ndaki katliamı monokrom renklerle ve geometrik formlarla anlatan ressamdır." },
-                    { target: "Edvard Munch", event: "Çığlık", event: "Ekspresyonizm (Dışavurumculuk)", hint: "Kan kırmızısı gökyüzü altında iki eliyle kafasını tutan ıstırap dolu figürü çizen Norveçli ressamdır." },
-                    { target: "Michelangelo", event: "Davut Heykeli", region: "Sistine Şapeli Tavanı", hint: "Mermer kütlesinin içindeki fazlalıkları atarak kusursuz insan anatomisini çıkaran heykeltıraştır." },
-                    { target: "Salvador Dali", event: "Belleğin Azmi (Eriyen Saatler)", region: "Sürrealizm (Gerçeküstücülük)", hint: "Zamanın bükülebilirliğini sahilde eriyen cep saatleri tasviriyle gösteren eksantrik ressamdır." },
-                    { target: "Wolfgang Amadeus Mozart", event: "Sihirli Flüt", region: "Klasik Müzik Dönemi", hint: "Çocuk yaşta besteler yapmaya başlayan, Avusturyalı dahi opera ve senfoni bestecisidir." },
-                    { target: "Ludwig van Beethoven", event: "9. Senfoni (Neşeye Övgü)", region: "Romantik Dönem Geçişi", hint: "Tamamen sağır olduğu dönemde insanlık tarihinin en görkemli koral senfonisini besteleyen dehadır." }
-                ]
-            };
-
-            const templates = [
-                "Kültürel ve bilimsel metinlerde sıkça karşımıza çıkan, karakteristik olarak #EVENT ile özdeşleşen ve merkez alanı #REGION kabul edilen odak nokta hangisidir?",
-                "Akademik araştırmalarda ve tarihi belgelerde önemle vurgulanan; #REGION evreninde #EVENT adımıyla çığır açan unsur hangisidir?",
-                "Evrensel miras arşivlerinde özel bir yeri olan; #EVENT denildiğinde doğrudan akla gelen ve #REGION ile bağdaştırılan yapı/şahsiyet hangisidir?"
-            ];
-
-            // 2000+ Varyasyonu oluşturmak için her kategorideki kombinasyonları zenginleştirerek havuz doldurma
-            Object.keys(dataBank).forEach(cat => {
-                let items = dataBank[cat];
-                
-                // Havuz hacmini şişirmek için iç döngü ile çoklu varyasyon üretiyoruz
-                for (let i = 0; i < 45; i++) {
-                    items.forEach(item => {
-                        // Yanlış seçenekleri (çeldiricileri) kendi kategorisindeki diğer elemanlardan rastgele seçiyoruz
-                        let distractors = items.filter(x => x.target !== item.target).map(x => x.target);
-                        shuffleArray(distractors);
-                        let selectedAlts = distractors.slice(0, 3);
-                        
-                        let options = [item.target, ...selectedAlts];
-                        shuffleArray(options);
-                        
-                        let temp = templates[i % templates.length];
-                        let questionText = temp.replace("#EVENT", item.event).replace("#REGION", item.region);
-
-                        pool[cat].push({
-                            category: cat,
-                            difficulty: i % 2 === 0 ? "Orta" : "Zor",
-                            question: questionText,
-                            options: options,
-                            correct: options.indexOf(item.target),
-                            hint: item.hint
-                        });
-                    });
-                }
-                // Her kategorinin kendi havuzunu karıştır
-                shuffleArray(pool[cat]);
-            });
-
-            return pool;
-        }
-
-        // --- ANTI-CLUMP: KATEGORİ PEŞ PEŞE GELME ENGELLEYİCİ SEÇİM ALGORİTMASI ---
-        function selectAntiClumpQuestions(massivePool) {
-            let selectedRoundQuestions = [];
-            // Kategori isimlerini alıyoruz
-            let categories = Object.keys(massivePool);
-            
-            // 15 adet soru çekilene kadar kategoriler arasında eşit döngü yapıyoruz
-            for (let i = 0; i < 15; i++) {
-                let currentCategory = categories[i % categories.length];
-                let question = massivePool[currentCategory].pop(); // Her kategorinin kendi karışmış listesinden en üsttekini çek
-                selectedRoundQuestions.push(question);
-            }
-            
-            // Son bir kez sadece soru şıklarının kendi içini doğrula ve turu hazırla
-            return selectedRoundQuestions;
-        }
-
-        // --- ANA OYUN MOTORU ---
-        class AtlasEngine {
+        // --- ENTEGRE HAFIZA VE BAN MOTORU (ANTI-REPETITION) ---
+        class AntiRepetitiveEngine {
             constructor() {
-                this.audio = new SafeSoundController();
-                this.questions = [];
+                this.audio = new AudioEngine();
+                this.roundQuestions = [];
                 this.currentIndex = 0;
+                this.score = 0;
                 this.timerVal = 60;
                 this.timerInterval = null;
-                this.score = 0;
                 this.startTime = null;
-                this.jokers = { fifty: false, hint: false, divine: false };
-                this.uiLocked = false;
+                this.jokers = { fifty: false, hint: false };
 
                 this.views = {
                     welcome: document.getElementById('welcomeState'),
@@ -547,135 +383,193 @@
 
             init() {
                 document.getElementById('startGameBtn').addEventListener('click', () => { this.audio.init(); this.startCountdown(); });
-                document.getElementById('restartGameBtn').addEventListener('click', () => { this.audio.playClick(); this.resetGame(); });
-                document.getElementById('themeToggleBtn').addEventListener('click', () => { this.audio.init(); this.toggleTheme(); });
-                document.getElementById('modalCloseBtn').addEventListener('click', () => { this.audio.playClick(); this.views.modal.classList.add('hidden'); });
-                
-                document.getElementById('jokerFifty').addEventListener('click', () => this.useFiftyFifty());
-                document.getElementById('jokerHint').addEventListener('click', () => this.useHint());
-                document.getElementById('jokerDivine').addEventListener('click', () => this.useDivine());
+                document.getElementById('restartGameBtn').addEventListener('click', () => { this.audio.playTone(400,'sine',0.1,0.2); this.resetToWelcome(); });
+                document.getElementById('modalCloseBtn').addEventListener('click', () => { this.views.modal.classList.add('hidden'); });
+                document.getElementById('jokerFifty').addEventListener('click', () => this.triggerFiftyFifty());
+                document.getElementById('jokerHint').addEventListener('click', () => this.triggerHint());
+                document.getElementById('resetMemoryBtn').addEventListener('click', () => this.clearLocalStorageMemory());
+                document.getElementById('themeToggleBtn').addEventListener('click', () => this.toggleTheme());
 
-                const sBtn = document.getElementById('toggleSoundBtn');
-                sBtn.addEventListener('click', () => {
-                    this.audio.init();
-                    this.audio.toggleMute(sBtn, document.querySelector('.sound-on-icon'), document.querySelector('.sound-off-icon'));
-                });
+                this.updateMemoryStatsUI();
+                this.initBackgroundParticles();
+            }
 
-                this.initParticles();
+            getBannedIds() {
+                return JSON.parse(localStorage.getItem('atlas_banned_questions_v2')) || [];
+            }
+
+            saveBannedId(id) {
+                let banned = this.getBannedIds();
+                if (!banned.includes(id)) {
+                    banned.push(id);
+                    localStorage.setItem('atlas_banned_questions_v2', JSON.stringify(banned));
+                }
+            }
+
+            clearLocalStorageMemory() {
+                localStorage.removeItem('atlas_banned_questions_v2');
+                alert("Sistem hafızası tamamen sıfırlandı! Tüm sorular yeniden havuza dahil edildi.");
+                this.updateMemoryStatsUI();
+            }
+
+            updateMemoryStatsUI() {
+                let bannedCount = this.getBannedIds().length;
+                let totalPossible = 0;
+                Object.keys(MASTER_DATA).forEach(k => totalPossible += MASTER_DATA[k].length);
+                document.getElementById('memoryStats').innerText = `Hafızada Yasaklı Özne: ${bannedCount} / Toplam Konu: ${totalPossible}`;
             }
 
             toggleTheme() {
-                const current = document.documentElement.getAttribute('data-theme');
-                const next = current === 'light' ? 'dark' : 'light';
-                document.documentElement.setAttribute('data-theme', next);
-                this.audio.playClick();
-                
-                const isLight = next === 'light';
-                document.querySelector('.sun-icon').classList.toggle('hidden', !isLight);
-                document.querySelector('.moon-icon').classList.toggle('hidden', isLight);
+                const cur = document.documentElement.getAttribute('data-theme');
+                document.documentElement.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
             }
 
-            initParticles() {
+            initBackgroundParticles() {
                 const canvas = document.getElementById('particleCanvas');
                 const ctx = canvas.getContext('2d');
                 let pts = [];
-                const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-                window.addEventListener('resize', resize); resize();
-
-                for(let i=0; i<40; i++) pts.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2+1, s: Math.random()*0.3+0.1 });
-                const anim = () => {
+                const res = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+                window.addEventListener('resize', res); res();
+                for(let i=0; i<30; i++) pts.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5+1, s: Math.random()*0.2+0.05 });
+                const render = () => {
                     ctx.clearRect(0,0,canvas.width,canvas.height);
-                    ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'light' ? 'rgba(0,160,100,0.3)' : 'rgba(0,200,120,0.4)';
+                    ctx.fillStyle = 'rgba(0, 200, 120, 0.2)';
                     pts.forEach(p => {
                         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
-                        p.y -= p.s; if(p.y < 0) { p.y = canvas.height; p.x = Math.random()*canvas.width; }
+                        p.y -= p.s; if(p.y < 0) p.y = canvas.height;
                     });
-                    requestAnimationFrame(anim);
+                    requestAnimationFrame(render);
                 };
-                anim();
+                render();
+            }
+
+            // --- TAMAMEN YASAKLI FİLTRESİNDEN GEÇMİŞ DİNAMİK TUR KURULUMU ---
+            buildRoundQuestions() {
+                let bannedIds = this.getBannedIds();
+                let categories = Object.keys(MASTER_DATA);
+                let roundList = [];
+                
+                // Eğer havuzdaki soruların çoğu yasaklandıysa hafızayı otomatik temizle ki oyun kilitlenmesin
+                let totalItems = 0;
+                categories.forEach(c => totalItems += MASTER_DATA[c].length);
+                if (bannedIds.length >= totalItems - 3) {
+                    localStorage.removeItem('atlas_banned_questions_v2');
+                    bannedIds = [];
+                }
+
+                let catIndexPointer = 0;
+                let securityCounter = 0;
+
+                while (roundList.length < 15 && securityCounter < 500) {
+                    securityCounter++;
+                    let currentCat = categories[catIndexPointer % categories.length];
+                    
+                    // Bu kategorideki tüm elemanları al ve filtrele
+                    let rawItems = MASTER_DATA[currentCat];
+                    let availableItems = rawItems.filter(item => !bannedIds.includes(item.id) && !roundList.some(r => r.id === item.id));
+
+                    // Eğer temiz soru kalmadıysa banlıları bu turluk esnet ama öncelik hep temiz olanların
+                    if (availableItems.length === 0) {
+                        availableItems = rawItems.filter(item => !roundList.some(r => r.id === item.id));
+                    }
+
+                    if (availableItems.length > 0) {
+                        // Rastgele bir özne seç
+                        let chosenItem = availableItems[Math.floor(Math.random() * availableItems.length)];
+                        
+                        // Çeldiricileri (Yanlış şıkları) aynı kategorideki DİĞER öznelerden topla
+                        let otherTargets = rawItems.filter(x => x.target !== chosenItem.target).map(x => x.target);
+                        otherTargets.sort(() => 0.5 - Math.random());
+                        let finalOptions = [chosenItem.target, otherTargets[0], otherTargets[1], otherTargets[2]];
+                        
+                        // Şıkları karıştır
+                        finalOptions.sort(() => 0.5 - Math.random());
+
+                        // Rastgele şablon giydir (Böylece cümle de hep değişir)
+                        let template = TEMPLATES[Math.floor(Math.random() * TEMPLATES.length)];
+                        let formattedText = template.replace("#EVENT", chosenItem.event).replace("#REGION", chosenItem.region);
+
+                        roundList.push({
+                            id: chosenItem.id,
+                            category: currentCat,
+                            difficulty: Math.random() > 0.5 ? "Zor" : "Orta",
+                            question: formattedText,
+                            options: finalOptions,
+                            correct: finalOptions.indexOf(chosenItem.target),
+                            hint: chosenItem.hint
+                        });
+
+                        // Sonraki soru için kategori değiştir (Anti-Clump zinciri)
+                        catIndexPointer++;
+                    } else {
+                        catIndexPointer++;
+                    }
+                }
+                
+                this.roundQuestions = roundList;
             }
 
             showView(key) {
-                Object.keys(this.views).forEach(k => {
-                    if(k !== 'modal') this.views[k].classList.replace('visible', 'hidden');
-                });
+                Object.keys(this.views).forEach(k => { if(k !== 'modal') this.views[k].classList.replace('visible', 'hidden'); });
                 this.views[key].classList.replace('hidden', 'visible');
             }
 
             startCountdown() {
-                this.audio.playClick();
                 this.showView('countdown');
-                let count = 3;
+                let c = 3;
                 const el = document.getElementById('countdownNumber');
-                
-                const tick = () => {
-                    if(count > 0) {
-                        el.innerText = count;
-                        this.audio.playTone(440, 'sine', 0.1, 0.5);
-                        count--; setTimeout(tick, 1000);
+                const loop = () => {
+                    if(c > 0) {
+                        el.innerText = c;
+                        this.audio.playTone(440, 'sine', 0.1, 0.3);
+                        c--; setTimeout(loop, 1000);
                     } else {
-                        this.setupGame();
+                        this.startGameEngine();
                     }
                 };
-                tick();
+                loop();
             }
 
-            setupGame() {
-                // Devasa havuz üretiliyor ve anti-clump filtresiyle 15 dengeli soru seçiliyor
-                let rawPool = generateMassiveQuestionPool();
-                this.questions = selectAntiClumpQuestions(rawPool); 
-                
+            startGameEngine() {
+                this.buildRoundQuestions();
                 this.currentIndex = 0;
                 this.score = 0;
                 this.startTime = Date.now();
-                this.jokers = { fifty: false, hint: false, divine: false };
-                
-                const j50 = document.getElementById('jokerFifty');
-                j50.disabled = false;
+                this.jokers = { fifty: false, hint: false };
+                document.getElementById('jokerFifty').disabled = false;
                 
                 this.showView('gameplay');
-                this.loadQuestion();
+                this.loadActiveQuestion();
             }
 
-            loadQuestion() {
-                this.uiLocked = false;
-                const q = this.questions[this.currentIndex];
+            loadActiveQuestion() {
+                const q = this.roundQuestions[this.currentIndex];
                 
+                // Karşılaşılmış soruyu anında hafızaya/kara listeye kaydet (Sayfa kapansa bile bir daha gelmeyecek)
+                this.saveBannedId(q.id);
+
                 document.getElementById('currentQuestionNum').innerText = this.currentIndex + 1;
                 document.getElementById('progressBarFill').style.width = `${((this.currentIndex + 1) / 15) * 100}%`;
                 document.getElementById('questionCategory').innerText = q.category;
                 document.getElementById('questionDifficulty').innerText = q.difficulty;
-                
-                const qText = document.getElementById('questionText');
-                qText.style.animation = 'none';
-                qText.offsetHeight; 
-                qText.style.animation = 'fadeInDown 0.6s ease forwards';
-                qText.innerText = q.question;
+                document.getElementById('questionText').innerText = q.question;
 
                 const grid = document.getElementById('optionsGrid');
                 grid.innerHTML = '';
-                q.options.forEach((opt, i) => {
+                
+                q.options.forEach((opt, idx) => {
                     const btn = document.createElement('button');
                     btn.className = 'option-node';
-                    btn.innerHTML = `<span style="color:var(--primary-accent); padding-right:10px;">${String.fromCharCode(65+i)}:</span> ${opt}`;
-                    btn.addEventListener('click', () => this.selectOption(i));
+                    btn.innerHTML = `<span style="color:var(--primary-accent); font-weight:800; margin-right:8px;">${String.fromCharCode(65+idx)}:</span> ${opt}`;
+                    btn.addEventListener('click', () => this.handleSelection(idx));
                     grid.appendChild(btn);
                 });
 
-                this.updateJokerUI();
-                this.startTimer();
+                document.getElementById('jokerHint').disabled = (this.currentIndex < 2 || this.jokers.hint);
+                this.startTimerSystem();
             }
 
-            updateJokerUI() {
-                const round = this.currentIndex + 1;
-                const jh = document.getElementById('jokerHint');
-                const jd = document.getElementById('jokerDivine');
-
-                if(round > 3 && !this.jokers.hint) { jh.disabled = false; } else { jh.disabled = true; }
-                if(round > 7 && !this.jokers.divine) { jd.disabled = false; } else { jd.disabled = true; }
-            }
-
-            startTimer() {
+            startTimerSystem() {
                 clearInterval(this.timerInterval);
                 this.timerVal = 60;
                 const el = document.getElementById('timerDisplay');
@@ -685,133 +579,93 @@
                 this.timerInterval = setInterval(() => {
                     this.timerVal--;
                     el.innerText = this.timerVal;
-                    
-                    this.audio.playClockTick(this.timerVal);
+                    this.audio.tick(this.timerVal <= 15);
 
-                    if(this.timerVal <= 15) { el.classList.add('timer-panic'); }
-                    if(this.timerVal <= 0) { clearInterval(this.timerInterval); this.gameOver(false); }
+                    if(this.timerVal <= 15) el.classList.add('timer-panic');
+                    if(this.timerVal <= 0) { clearInterval(this.timerInterval); this.endGameSequence(false); }
                 }, 1000);
             }
 
-            selectOption(idx) {
-                if(this.uiLocked) return;
-                this.uiLocked = true;
+            handleSelection(idx) {
                 clearInterval(this.timerInterval);
-                this.audio.playLock();
+                this.audio.lock();
 
                 const nodes = document.getElementById('optionsGrid').children;
+                // Diğer tıklamaları engellemek için gridi kilitle
+                for(let n of nodes) n.style.pointerEvents = 'none';
                 nodes[idx].classList.add('selected-lock');
 
-                let ticks = 0;
-                const susp = setInterval(() => {
-                    this.audio.playTone(700 + (ticks*80), 'sine', 0.1, 0.15); 
-                    ticks++;
-                    if(ticks >= 3) { clearInterval(susp); this.checkAnswer(idx); }
-                }, 800);
+                setTimeout(() => {
+                    const q = this.roundQuestions[this.currentIndex];
+                    if (idx === q.correct) {
+                        nodes[idx].classList.replace('selected-lock', 'reveal-correct');
+                        this.audio.correct();
+                        this.score += 300 + (this.timerVal * 15);
+                        this.currentIndex++;
+                        
+                        setTimeout(() => {
+                            if (this.currentIndex >= 15) this.endGameSequence(true);
+                            else this.loadActiveQuestion();
+                        }, 2000);
+                    } else {
+                        nodes[idx].classList.replace('selected-lock', 'reveal-wrong');
+                        nodes[q.correct].classList.add('reveal-correct');
+                        this.audio.wrong();
+                        setTimeout(() => this.endGameSequence(false), 2500);
+                    }
+                }, 1500);
             }
 
-            checkAnswer(idx) {
-                const q = this.questions[this.currentIndex];
-                const nodes = document.getElementById('optionsGrid').children;
-                
-                if(idx === q.correct) {
-                    nodes[idx].classList.replace('selected-lock', 'reveal-correct');
-                    this.audio.playCorrect();
-                    this.score += 200 + (this.timerVal * 10); 
-                    this.currentIndex++;
-
-                    setTimeout(() => {
-                        if(this.currentIndex >= 15) {
-                            this.gameOver(true);
-                        } else {
-                            if(this.currentIndex === 3) this.showModal("KİLOMETRE TAŞI", "3. soruyu geçerek bilgi seviyenizi kanıtladınız. İpucu jokeri artık aktif!");
-                            if(this.currentIndex === 7) this.showModal("KİLOMETRE TAŞI", "7. soruyu geride bıraktınız. İlahi Müdahale jokeri kullanıma hazır.");
-                            this.loadQuestion();
-                        }
-                    }, 3000);
-                } else {
-                    nodes[idx].classList.replace('selected-lock', 'reveal-wrong');
-                    nodes[q.correct].classList.add('reveal-correct');
-                    this.audio.playWrong();
-                    setTimeout(() => this.gameOver(false), 3000);
-                }
-            }
-
-            useFiftyFifty() {
-                if(this.uiLocked || this.jokers.fifty) return;
+            triggerFiftyFifty() {
+                if (this.jokers.fifty) return;
                 this.jokers.fifty = true;
-                this.audio.playClick();
-                
-                const correct = this.questions[this.currentIndex].correct;
+                document.getElementById('jokerFifty').disabled = true;
+                this.audio.playTone(500, 'sine', 0.1, 0.2);
+
+                const correct = this.roundQuestions[this.currentIndex].correct;
                 const nodes = document.getElementById('optionsGrid').children;
-                let removed = 0;
+                let eliminated = 0;
                 
-                let order = [0,1,2,3].sort(() => 0.5 - Math.random());
-                for(let i of order) {
-                    if(i !== correct && removed < 2) {
+                let indices = [0, 1, 2, 3].sort(() => 0.5 - Math.random());
+                for (let i of indices) {
+                    if (i !== correct && eliminated < 2) {
                         nodes[i].classList.add('eliminated-fifty');
-                        removed++;
+                        eliminated++;
                     }
                 }
-                document.getElementById('jokerFifty').disabled = true;
             }
 
-            useHint() {
-                if(this.uiLocked || this.jokers.hint) return;
+            triggerHint() {
+                if (this.jokers.hint || this.currentIndex < 2) return;
                 this.jokers.hint = true;
-                this.audio.playClick();
-                this.showModal("Stratejik İpucu", this.questions[this.currentIndex].hint);
-                this.updateJokerUI();
-            }
+                document.getElementById('jokerHint').disabled = true;
+                this.audio.playTone(500, 'sine', 0.1, 0.2);
 
-            useDivine() {
-                if(this.uiLocked || this.jokers.divine) return;
-                this.jokers.divine = true;
-                this.audio.playClick();
-                
-                const correct = this.questions[this.currentIndex].correct;
-                const btn = document.getElementById('optionsGrid').children[correct];
-                btn.style.boxShadow = "0 0 25px gold";
-                btn.style.borderColor = "gold";
-                this.updateJokerUI();
-            }
-
-            showModal(title, text) {
-                document.getElementById('modalTitle').innerText = title;
-                document.getElementById('modalBody').innerText = text;
+                document.getElementById('modalBody').innerText = this.roundQuestions[this.currentIndex].hint;
                 this.views.modal.classList.remove('hidden');
             }
 
-            gameOver(victory) {
+            endGameSequence(isVictory) {
                 clearInterval(this.timerInterval);
                 this.showView('results');
-                
-                const totalTime = Math.floor((Date.now() - this.startTime) / 1000);
-                let badge = "GEZGİN";
-                
-                if(victory) { document.getElementById('resultTitle').innerText = "SİZ BİR FİLOZOFSUNUZ"; badge = "FİLOZOF"; }
-                else if(this.currentIndex >= 10) { document.getElementById('resultTitle').innerText = "BİLGİN BİR İNSANSINIZ"; badge = "BİLGİN"; }
-                else if(this.currentIndex >= 5) { document.getElementById('resultTitle').innerText = "KÜLTÜRLÜ BİR İNSANSINIZ"; badge = "KÜLTÜRLÜ"; }
-                else { document.getElementById('resultTitle').innerText = "ELENDİNİZ"; badge = "ÇIRAK"; }
 
-                document.getElementById('badgeContainer').innerText = badge;
+                document.getElementById('resultTitle').innerText = isVictory ? "TEBRİKLER, ATLASI TAMAMLADINIZ!" : "ELENDİNİZ";
                 document.getElementById('metricAccuracy').innerText = `${this.currentIndex} / 15`;
                 document.getElementById('metricScore').innerText = this.score;
-                document.getElementById('metricTime').innerText = `${totalTime} sn`;
-
-                let hi = localStorage.getItem('atlas_hi') || 0;
-                if(this.score > hi) { hi = this.score; localStorage.setItem('atlas_hi', hi); }
-                document.getElementById('metricHighScore').innerText = hi;
+                document.getElementById('metricMemoryCount').innerText = this.getBannedIds().length;
+                
+                this.updateMemoryStatsUI();
             }
 
-            resetGame() {
+            resetToWelcome() {
+                this.updateMemoryStatsUI();
                 this.showView('welcome');
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const app = new AtlasEngine();
-            app.init();
+            const engine = new AntiRepetitiveEngine();
+            engine.init();
         });
     </script>
 </body>
